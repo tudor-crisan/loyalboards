@@ -1,4 +1,3 @@
-"use client";
 import { redirect } from "next/navigation";
 import { useAuth } from "@/context/ContextAuth";
 import { getMetadata } from "@/libs/seo";
