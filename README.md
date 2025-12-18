@@ -31,12 +31,15 @@ Creating and setting-up 3rd party
 - Create a new database "appName-dev" and "-prod" with collection "users"
 - Create a new AUTH_SECRET in env - with "npx auth secret"
 - Create a new OAuth at https://console.cloud.google.com/auth/overview
+- ORIGINS - http://localhost:3000 - https://localhost:3000
+- REDIRECT URIs - http://localhost:3000/api/auth/callback/google - https://localhost:3000/api/auth/callback/google
+- SAME FOR DOMAIN - as the above, but put the actual domain there
 - Save AUTH_SECRET | GOOGLE_CLIENT_ID | GOOGLE_CLIENT_SECRET inside docs-v3.rtf
 ```
 
-## Deploy on vercel
+## Deploy staging
 
-Copy all folders / files
+Copy all folders / files in new folder
 
 ```bash
 Except for
@@ -44,90 +47,40 @@ Except for
 - node_modules
 ```
 
-Change .env / package.json:
+Arange folder / files and deploy
 
 ```bash
-Change the .env variables
-- NEXT_PUBLIC_APP="appName" (eg. loyalboards)
-- MONGO_DB="appName-prod" (eg. LoyalBoards-rprod)
-- RESEND_EMAIL_FROM="appName@" (eg. LoyalBoards@email.tudorcrisan.dev)
+Create a new github repo / deploy
+-Open in that folder git bash - git init / code .
 
-Change the package.json
--"name":"appName" (eg. loyalboards)
--"version": from "0.0.1" to "0.0.2" (for example)
+Remove all unused files: (for speed)
+- delete fonts that are not used from - lists/fonts.js
+- keep only what's in public/apps/"appName" (rest delete all)
+- delete the env/.env.<appName> variables, keep only the one of the app
 
-Remove from package.json
-- scripts: lint, typescript
-- dependencies: zod
-- devDependencies: eslint, eslint-config-next
+Deploy on github and vercel
+- Git add all files / commit / publish private branch
+- Open vercel new project, and copy-paste the variables
+
+Namecheap domain registration
+- Add Domain - after the build is complete
+- Domain - register a $1-2 domain (.my)
+- Advanced DNS - set-up the CNAME / A records (from vercel)
+- Mail Settings - "No Email Service"
 ```
 
-Remove all unused files:
-
-```bash
-keep only the "appName" from lists/apps.js (rest delete)
-lists/apps.js
-components/shuffle
-components/wrapper/WrapperShuffle.js
-
-arange the app/globals.css
--change "themes: all" to "themes: <theme>"
--remove the commented line
-
-keep only what's used in "apps.js"
-lists/copywritings.js
-lists/stylings.js
-lists/visuals.js
-lists/fonts.js
-lists/logos.js
-lists/themes.js
-
-keep only what's in apps.js (rest files delete)
-data/copywriting
-data/styling
-data/visual
-
-keep only what's in public/apps/"appName" (rest delete all)
-notes/
-public/assets/
-scripts/
-sensitive/
-types/
-README.md
-.env.example
-```
-
-Test locally:
-
-```bash
-- have the .env.local variables
-- run "npm install" then "npm run dev"
-- test in browser at localhost:3000
-```
-
-Git / Vercel deploy
-
-```bash
-* Initialize a new git repository
-* Add all files / commit / push private
-* Vercel - new project, click import
-* Set-up the environment variables
-* Domain - register a $1-2 domain (.my)
-* Basic DNS - set-up the email forwarding (alias tudor.crisan)
-* Advanced DNS - set-up the CNAME / A records (from vercel)
-```
-
-## Deploy 3rd party
+## Deploy production
 
 Publish app in Google OAuth
 
 ```bash
+- Modify the "Environment Variables" on Vercel - MONGO_DB="appName-prod" (eg. LoyalBoards-prod)
 - Go to https://console.cloud.google.com/auth/audience?project=<appName>
 - Select "Audience" on the left
 - Click "Publish app"
 ```
 
-## Publish to TudorCrisan.dev
+## Publish to TudorCrisan.dev (+socials)
 
 Go to the tudorcrisan.dev repository and add it there
 
@@ -141,6 +94,6 @@ Publish on twitter / reddit / ph / directories
 ```bash
 - Prepare the launch from the notes writen on notes/<appName>.txt
 - Polish there the launch details - get it ready to publish
-- Upload the publishing extension for different directories
+- Upload data to the "publishing chrome extension", that uploads to different directories
 - Keep track in notes/<appName>.txt of where it's launched and when
 ```
