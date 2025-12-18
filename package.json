@@ -1,0 +1,36 @@
+{
+  "name": "startfast",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:loyalboards": "cross-env APP=loyalboards next dev",
+    "dev:taskflow": "cross-env APP=taskflow next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typescript": "npx tsx scripts/typescript.js"
+  },
+  "dependencies": {
+    "@auth/mongodb-adapter": "^3.11.1",
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "mongodb": "^6.0.0",
+    "mongoose": "^9.0.1",
+    "next": "16.0.8",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "react-hot-toast": "^2.6.0",
+    "resend": "^6.6.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "cross-env": "^10.1.0",
+    "daisyui": "^5.5.8",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.8",
+    "tailwindcss": "^4"
+  }
+}

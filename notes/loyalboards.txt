@@ -1,0 +1,71 @@
+
+#1
+
+Headline:
+Act on power-users feedback only
+
+Paragraph:
+Save costs, by not shipping what churners want
+
+Problem:
+Spending weeks going in the wrong direction is no fun, that's why we've build LoyalBoards
+
+---
+
+#2
+
+Headline: 
+Feedback from your longterm customers only
+
+How? We pull your stripe customer data, and give a rank to your comitted users, so you can act on trusted insight only
+
+Paragraph:
+Integrates \w stripe, so you know who's voting
+
+Button:
+Collect Valuable Feedback
+
+Link:
+👀 See demo first
+
+Lets face it, not all feedback should be acted on, and some features your loyal customers desperately want!
+
+---
+
+#3
+
+idea: loyalboar.ds (domain)
+
+courses feedback boards
+- make this great with codefast/shipfast
+- offer it as a bonus on the plus plan
+- build getrevtrack of ed lawrence film booth
+- promote it through DM, x, contact forma
+
+HEADLINE:
+Structured feedback = increased quality
+
+PARAGRAPH:
+Discover what loyal fans want by collecting mini-feedbacks
+
+👀 How it works:
+ - Create a board, Share the url 
+ - Students start leaving feedback
+ - Other fans vote the top comments
+ - You add-on/modify based on the most voted
+
+PIVOT:
+- make it around youtube videos feedback boards, not necesarily, courses, although that can be too
+- have it in sync with the videos from the channel
+
+---
+
+json modifier admin
+- tree structure, going deep
+- different json with name, description, info, rules
+- typeof, string, number, boolean, for the inputs/progress bar/switch/ai text
+- push/pop/rearange/find/filter etc for array, a simple crud
+- object expand with key/values, modify existing ones
+- upload for image/video filepaths
+- multioptions, for tailwind classes, list of logos
+- enums for themes, fonts
