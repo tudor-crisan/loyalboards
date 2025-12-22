@@ -20,6 +20,10 @@
       "previewEmail": {
         "source": "/preview/email",
         "destination": "/modules/preview/email"
+      },
+      "billingSuccess": {
+        "source": "/success",
+        "destination": "/modules/billing/success"
       }
     }
   },
@@ -51,9 +55,17 @@
             "message": "Not authorized",
             "status": 401
           },
+          "noAccess": {
+            "message": "Please subscribe first",
+            "status": 403
+          },
           "sessionLost": {
             "message": "Session lost, log-in again",
             "status": 401
+          },
+          "noInternetConnection": {
+            "message": "No internet connection",
+            "status": 408
           },
           "serverError": {
             "message": "Something went wrong",
@@ -61,6 +73,24 @@
           },
           "requestSuccessful": {
             "message": "Request was successful",
+            "status": 200
+          }
+        }
+      }
+    },
+    "Billing": {
+      "backend": {
+        "responses": {
+          "urlsRequired": {
+            "message": "Redirect URLs are required",
+            "status": 400
+          },
+          "checkoutCreated": {
+            "message": "You are being redirected to payment",
+            "status": 200
+          },
+          "portalCreated": {
+            "message": "You are being redirected to billing",
             "status": 200
           }
         }
@@ -85,7 +115,9 @@
         "responses": {
           "nameRequired": {
             "message": "Board name is required",
-            "inputErrors": { "name": "This field is required" },
+            "inputErrors": {
+              "name": "This field is required"
+            },
             "status": 400
           },
           "boardIdRequired": {
@@ -110,12 +142,13 @@
         "responses": {
           "error": {
             "error": "Not authorized",
-            "inputErrors": { "name": "This is required" },
+            "inputErrors": {
+              "name": "This is required"
+            },
             "status": 401
           },
           "success": {
             "message": "Board created succesfully",
-            "data": { "board": { "name": "NEW BOARD" } },
             "status": 200
           }
         }
