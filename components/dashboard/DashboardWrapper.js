@@ -1,8 +1,9 @@
+import Main from "@/components/common/Main";
 
 export default function DashboardWrapper({ children }) {
   return (
-    <main className="bg-base-200 min-h-screen">
+    <Main className="bg-base-200">
       {children}
-    </main>
+    </Main>
   )
 }

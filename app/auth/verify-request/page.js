@@ -2,6 +2,7 @@
 import { useStyling } from "@/context/ContextStyling";
 import SvgEmail from "@/components/svg/SvgEmail";
 import ButtonBack from "@/components/button/ButtonBack";
+import Title from "@/components/common/Title";
 
 export default function VerifyRequestPage() {
   const { styling } = useStyling();
@@ -13,14 +14,16 @@ export default function VerifyRequestPage() {
           <div className="text-primary mx-auto my-4">
             <SvgEmail className="size-12" />
           </div>
-          <h2 className="card-title text-2xl font-bold mb-2">
+          <Title>
             Check your email
-          </h2>
+          </Title>
           <p className="text-base-content/70">
             A sign-in link has been sent to your email address.
           </p>
           <div className="mx-auto mt-6">
-            <ButtonBack url="/" className="btn-ghost" />
+            <ButtonBack
+              className="btn-ghost btn-md! shadow-none!"
+            />
           </div>
         </div>
       </div>

@@ -1,12 +1,13 @@
 "use client";
 import { useCopywriting } from "@/context/ContextCopywriting";
 import { useStyling } from "@/context/ContextStyling";
+import Input from "@/components/input/Input";
 
 export default function SectionFAQ() {
   const { copywriting } = useCopywriting();
   const { styling } = useStyling();
   return (
-    <section id="faq" className={`${styling.general.container} ${styling.general.spacing}`}>
+    <section id="faq" className={`${styling.general.container} ${styling.general.spacing} bg-base-100`}>
       <div className={`${styling.SectionFAQ.spacing} justify-center`}>
         <div className="flex-1 space-y-2">
           <p className={`${styling.general.label}`}>
@@ -19,7 +20,7 @@ export default function SectionFAQ() {
         <div className="flex-1">
           {copywriting.SectionFAQ.questions.map((faq, index) => (
             <div key={index} className={`${styling.roundness[1]} ${styling.borders[0]} collapse collapse-arrow bg-base-200 my-2`}>
-              <input type="radio" name="faq-accordion" defaultChecked={!index} />
+              <Input type="radio" name="faq-accordion" defaultChecked={!index} />
               <div className="collapse-title font-semibold text-primary">
                 {faq.question}
               </div>

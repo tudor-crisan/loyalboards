@@ -1,6 +1,8 @@
 import { getBoardPublic } from "@/libs/modules/boards/db";
 import { redirect } from "next/navigation";
 import { getMetadata } from "@/libs/seo";
+import Title from "@/components/common/Title";
+import Main from "@/components/common/Main";
 
 export const metadata = getMetadata("modules.board");
 export default async function PublicFeedbackBoard({ params }) {
@@ -12,10 +14,10 @@ export default async function PublicFeedbackBoard({ params }) {
   }
 
   return (
-    <main className="bg-base-200 min-h-screen">
-      <h1 className="font-extrabold text-xl mb-4">
-        {board.name} (public)
-      </h1>
-    </main>
+    <Main className="bg-base-200">
+      <Title>
+        {board.name}
+      </Title>
+    </Main>
   )
 }

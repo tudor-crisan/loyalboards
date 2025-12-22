@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import SvgError from "@/components/svg/SvgError";
 import ButtonBack from "@/components/button/ButtonBack";
+import Title from "@/components/common/Title";
+import Paragraph from "@/components/common/Paragraph";
 
 function ErrorContent() {
   const { styling } = useStyling();
@@ -27,14 +29,23 @@ function ErrorContent() {
           <div className="text-primary mb-4">
             <SvgError className="size-16" />
           </div>
-          <h2 className="card-title text-2xl font-bold mb-2">Authentication Error</h2>
-          <p className="mb-6">{message}</p>
+          <Title>
+            Authentication Error
+          </Title>
+          <Paragraph className="mb-6">
+            {message}
+          </Paragraph>
           <div className="card-actions w-full flex flex-col">
-            <Link href="/auth/signin" className={`btn btn-primary w-full ${styling.roundness[0]}`}>
+            <Link
+              href="/auth/signin"
+              className={`${styling.roundness[0]} ${styling.shadows[0]} btn btn-primary w-full`}
+            >
               Try Again
             </Link>
-            <div className="mx-auto mt-2">
-              <ButtonBack url="/" className="btn-ghost" />
+            <div className="mx-auto mt-6">
+              <ButtonBack
+                className="btn-ghost btn-md! shadow-none!"
+              />
             </div>
           </div>
         </div>

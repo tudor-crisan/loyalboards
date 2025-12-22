@@ -1,12 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import axios from "axios";
 import { defaultSetting as settings } from "@/libs/defaults";
 import { useRouter } from "next/navigation";
-import { setDataError, setDataSuccess } from "@/libs/api";
+import useApiRequest from "@/hooks/useApiRequest";
+import useForm from "@/hooks/useForm";
 import MockForms from "@/components/mock/MockForms";
+import Button from "@/components/button/Button";
+import Select from "@/components/select/Select";
+import Textarea from "@/components/textarea/Textarea";
+import Input from "@/components/input/Input";
 import { useStyling } from "@/context/ContextStyling";
+import Title from "@/components/common/Title";
+import Label from "@/components/common/Label";
 
 export default function FormCreate({ type }) {
   const router = useRouter();
@@ -15,82 +20,35 @@ export default function FormCreate({ type }) {
 
   const defaultInputs = Object.entries(inputsConfig).reduce((acc, entry) => ({
     ...acc, [entry[0]]: entry[1].value
-  }), {})
+  }), {});
 
-  const [inputs, setInputs] = useState({ ...defaultInputs });
+  const {
+    inputs,
+    inputErrors,
+    resetInputs,
+    setInputErrors,
+    handleChange,
+    handleFocus,
+  } = useForm(defaultInputs);
 
-  const setInput = (key, value) => {
-    setInputs({
-      ...inputs,
-      [key]: value
-    })
-  }
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [inputErrors, setInputErrors] = useState({});
-
-  const resetError = (key = "", value = "") => {
-    setInputErrors({ ...inputErrors, [key]: value })
-  }
-
-  const resetInputs = () => {
-    setInputs({ ...defaultInputs })
-  }
-
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    if (message) {
-      toast.success(message);
-      setMessage("");
-    }
-  }, [message]);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      setError("");
-    }
-  }, [error]);
-
-  const errorCallback = (error = "", inputErrors = {}) => {
-    setError(error);
-    setInputErrors(inputErrors);
-  }
-
-  const successCallback = (message) => {
-    setMessage(message);
-    resetInputs();
-    router.refresh();
-  }
+  const { loading, request } = useApiRequest();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (isLoading) {
-      return;
-    }
-
-    setInputErrors({});
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post(formConfig.apiUrl, { ...inputs });
-
-      if (setDataError(response, errorCallback)) {
-        return;
+    await request(
+      () => axios.post(formConfig.apiUrl, { ...inputs }),
+      {
+        onSuccess: () => {
+          resetInputs();
+          router.refresh();
+        },
+        onError: (_, validationErrors) => {
+          if (validationErrors) {
+            setInputErrors(validationErrors);
+          }
+        }
       }
-
-      if (setDataSuccess(response, successCallback)) {
-        return;
-      }
-    } catch (err) {
-      setDataError(err?.response, errorCallback);
-
-    } finally {
-      setIsLoading(false);
-    }
+    );
   }
 
   return (
@@ -99,44 +57,72 @@ export default function FormCreate({ type }) {
       onSubmit={handleSubmit}
     >
       {formConfig.title && (
-        <p className="font-bold text-lg mb-2 leading-tight">
+        <Title>
           {formConfig.title}
-        </p>
+        </Title>
       )}
       {Object.entries(inputsConfig).map(([target, config]) => (
-        <fieldset
+        <div
           key={target}
-          className="fieldset"
+          className="flex flex-col space-y-2"
         >
           {config.label && (
-            <legend className="fieldset-legend">
+            <Label>
               {config.label}
-            </legend>
+            </Label>
           )}
-          <input
-            required={config.required || false}
-            type={config.type || "text"}
-            className={`${styling.roundness[0]} ${styling.shadows[0]} input ${inputErrors[target] && 'input-error'}`}
-            placeholder={config.placeholder}
-            value={inputs[target]}
-            onFocus={() => resetError(target)}
-            onChange={(e) => setInput(target, e.target.value)}
-            disabled={isLoading}
-          />
+
+          {config.type === "select" ? (
+            <Select
+              required={config.required || false}
+              className={config.className || ""}
+              error={inputErrors[target]}
+              value={inputs[target]}
+              options={config.options || []}
+              placeholder={config.placeholder}
+              onFocus={() => handleFocus(target)}
+              onChange={(e) => handleChange(target, e.target.value)}
+              disabled={loading}
+            />
+          ) : config.type === "textarea" ? (
+            <Textarea
+              required={config.required || false}
+              className={config.className || ""}
+              error={inputErrors[target]}
+              placeholder={config.placeholder}
+              value={inputs[target]}
+              onFocus={() => handleFocus(target)}
+              onChange={(e) => handleChange(target, e.target.value)}
+              disabled={loading}
+              rows={config.rows || 3}
+            />
+          ) : (
+            <Input
+              required={config.required || false}
+              className={config.className || ""}
+              type={config.type || "text"}
+              error={inputErrors[target]}
+              placeholder={config.placeholder}
+              value={inputs[target]}
+              onFocus={() => handleFocus(target)}
+              onChange={(e) => handleChange(target, e.target.value)}
+              disabled={loading}
+            />
+          )}
+
           {inputErrors[target] && (
             <p className="label text-red-600">{inputErrors[target]}</p>
           )}
-        </fieldset>
+        </div>
       ))}
       <div className="flex">
-        <button
+        <Button
           type="submit"
-          disabled={isLoading}
-          className={`${styling.roundness[0]} ${styling.shadows[0]} btn btn-primary`}
+          isLoading={loading}
+          variant="btn-primary"
         >
-          {isLoading && <span className="loading loading-spinner loading-xs"></span>}
           {formConfig.button || "Create"}
-        </button>
+        </Button>
       </div>
       <MockForms type={type} />
     </form>
