@@ -28,10 +28,11 @@ export async function POST(req) {
 
       const user = await User.findById(data.object.client_reference_id);
 
-      user.hasAccess = true;
-      user.customerId = data.object.customer;
-
-      await user.save();
+      if (user) {
+        user.hasAccess = true;
+        user.customerId = data.object.customer;
+        await user.save();
+      }
 
     } else if (type === "customer.subscription.deleted") {
       // ❌ Revoke access to the product (subscription cancelled or non-payment)
@@ -42,13 +43,19 @@ export async function POST(req) {
         customerId: data.object.customer,
       });
 
-      user.hasAccess = false;
-
-      await user.save();
+      if (user) {
+        user.hasAccess = false;
+        await user.save();
+      }
     }
+
+    return NextResponse.json({ received: true });
+
   } catch (e) {
     console.error("Stripe error: " + e?.message);
+    return NextResponse.json(
+      { error: "Webhook handler failed" },
+      { status: 400 }
+    );
   }
-
-  return NextResponse.json({});
 }
