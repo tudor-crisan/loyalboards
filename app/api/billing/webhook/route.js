@@ -7,7 +7,7 @@ import User from "@/models/User";
 export async function POST(req) {
   try {
     // 1. Verify the webhook event is from Stripe
-    const stripe = new Stripe(process.env.STRIPE_API_KEY);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     const body = await req.text();
     const signature = (await headers()).get("stripe-signature");
