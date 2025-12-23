@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useStyling } from "@/context/ContextStyling";
 import HeaderTop from "@/components/header/HeaderTop";
@@ -10,11 +10,16 @@ import ButtonBack from "@/components/button/ButtonBack";
 import { defaultSetting as settings } from "@/libs/defaults";
 import Label from "@/components/common/Label";
 import Form from "@/components/common/Form";
+import { useAuthError } from "@/hooks/useAuthError";
+import { useError } from "@/hooks/useError";
+import Error from "@/components/common/Error";
 
 const CALLBACK_URL = "/dashboard"
 
-export default function SignInPage() {
+function SignInContent() {
   const { styling } = useStyling();
+  const { message } = useAuthError();
+  const { error: errorMessage, clearError } = useError(message);
   const [email, setEmail] = useState("");
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
@@ -42,12 +47,19 @@ export default function SignInPage() {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-base-200 ${styling.general.spacing}`}>
+    <div
+      className={`min-h-screen flex items-center justify-center bg-base-200 ${styling.general.spacing}`}
+      onFocusCapture={clearError}
+      onClickCapture={clearError}
+    >
       <div className={`card w-full max-w-sm bg-base-100 ${styling.shadows[1]} ${styling.roundness[1]} ${styling.borders[0]}`}>
         <div className="card-body">
           <div className="mx-auto mt-4 mb-8 scale-115 sm:scale-100">
             <HeaderTop url="/" />
           </div>
+
+          <Error message={errorMessage} />
+
           {!settings.auth.providers.length && (
             <p className="text-center">No sign-in methods available at this time</p>
           )}
@@ -102,5 +114,13 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 }
