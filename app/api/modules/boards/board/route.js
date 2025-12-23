@@ -63,6 +63,7 @@ export async function POST(req) {
 
     const board = await Board.create({ userId: user._id, name: body.name });
 
+    user.boards = (user.boards || []);
     user.boards.push(board._id);
     await user.save();
 
@@ -115,7 +116,7 @@ export async function DELETE(req) {
       userId: userId
     })
 
-
+    user.boards = (user.boards || []);
     user.boards = user.boards.filter((id) => id.toString() !== boardId);
 
     await user.save();
