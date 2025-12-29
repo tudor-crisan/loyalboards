@@ -8,7 +8,7 @@ export default function ButtonBack({ url = "/", className = "", disabled = false
       disabled={disabled}
       className={className}
       startIcon={<SvgBack />}
-      variant="btn" // Default plain btn class not primary
+      variant="btn"
     >
       Back
     </Button>

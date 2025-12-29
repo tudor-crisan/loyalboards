@@ -1,10 +1,10 @@
 import { auth } from "@/libs/auth";
-import connectMongo from "@/libs/modules/boards/mongoose";
+import connectMongo from "@/libs/mongoose";
 import { isResponseMock, responseMock, responseSuccess, responseError } from "@/libs/utils.server";
 import { defaultSetting as settings } from "@/libs/defaults";
-import User from "@/models/modules/boards/User";
+import User from "@/models/User";
 import Board from "@/models/modules/boards/Board";
-import { checkRateLimit } from "@/libs/rateLimit";
+import { checkReqRateLimit } from "@/libs/rateLimit";
 
 const TYPE = "Board";
 
@@ -27,12 +27,8 @@ export async function POST(req) {
     return responseMock(TYPE);
   };
 
-  const ip = req.headers.get("x-forwarded-for") || "0.0.0.0";
-  const { allowed, message } = await checkRateLimit(ip, "board-create", 10, 60);
-
-  if (!allowed) {
-    return responseError(message, {}, 429);
-  }
+  const error = await checkReqRateLimit(req, "board-create");
+  if (error) return error;
 
   try {
     const session = await auth();
@@ -63,10 +59,6 @@ export async function POST(req) {
 
     const board = await Board.create({ userId: user._id, name: body.name });
 
-    user.boards = (user.boards || []);
-    user.boards.push(board._id);
-    await user.save();
-
     return responseSuccess(createSuccesfully.message, { board }, createSuccesfully.status)
 
   } catch (e) {
@@ -76,12 +68,8 @@ export async function POST(req) {
 }
 
 export async function DELETE(req) {
-  const ip = req.headers.get("x-forwarded-for") || "0.0.0.0";
-  const { allowed, message } = await checkRateLimit(ip, "board-delete", 10, 60);
-
-  if (!allowed) {
-    return responseError(message, {}, 429);
-  }
+  const error = await checkReqRateLimit(req, "board-delete");
+  if (error) return error;
 
   try {
     const session = await auth();
@@ -115,11 +103,6 @@ export async function DELETE(req) {
       _id: boardId,
       userId: userId
     })
-
-    user.boards = (user.boards || []);
-    user.boards = user.boards.filter((id) => id.toString() !== boardId);
-
-    await user.save();
 
     return responseSuccess(deleteSuccesfully.message, {}, deleteSuccesfully.status)
 

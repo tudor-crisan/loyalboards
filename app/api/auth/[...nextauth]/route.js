@@ -1,5 +1,6 @@
 import { handlers } from "@/libs/auth";
-import { checkRateLimit } from "@/libs/rateLimit";
+import { checkReqRateLimit } from "@/libs/rateLimit";
+
 import { NextResponse } from "next/server";
 
 export const GET = handlers.GET;
@@ -8,20 +9,18 @@ export async function POST(req) {
   const url = new URL(req.url);
 
   if (url.pathname.includes("/signin/email") || url.pathname.includes("/signin/resend")) {
-    const ip = req.headers.get("x-forwarded-for") || "0.0.0.0";
-    const { allowed } = await checkRateLimit(ip, "auth-magic-link", 5, 300);
-
-    if (!allowed) {
-      return NextResponse.json({ url: `${url.origin}/auth/error?error=RateLimit` });
+    const response = await checkReqRateLimit(req, "auth-magic-link");
+    if (response) {
+      const data = await response.json();
+      return NextResponse.json({ url: `${url.origin}/auth/error?error=${encodeURIComponent(data.error)}` }, { status: 429 });
     }
   }
 
   if (url.pathname.includes("/signin/google")) {
-    const ip = req.headers.get("x-forwarded-for") || "0.0.0.0";
-    const { allowed } = await checkRateLimit(ip, "auth-google-signin", 10, 60);
-
-    if (!allowed) {
-      return NextResponse.json({ url: `${url.origin}/auth/error?error=RateLimit` });
+    const response = await checkReqRateLimit(req, "auth-google-signin");
+    if (response) {
+      const data = await response.json();
+      return NextResponse.json({ url: `${url.origin}/auth/error?error=${encodeURIComponent(data.error)}` }, { status: 429 });
     }
   }
 

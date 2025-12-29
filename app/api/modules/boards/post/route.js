@@ -1,11 +1,11 @@
 import { auth } from "@/libs/auth";
-import connectMongo from "@/libs/modules/boards/mongoose";
+import connectMongo from "@/libs/mongoose";
 import { isResponseMock, responseMock, responseSuccess, responseError } from "@/libs/utils.server";
 import { defaultSetting as settings } from "@/libs/defaults";
 
 import Post from "@/models/modules/boards/Post";
 import { Filter } from "bad-words";
-import { checkRateLimit } from "@/libs/rateLimit";
+import { checkReqRateLimit } from "@/libs/rateLimit";
 
 const TYPE = "Post";
 
@@ -25,12 +25,8 @@ export async function POST(req) {
     return responseMock(TYPE);
   };
 
-  const ip = req.headers.get("x-forwarded-for") || "0.0.0.0";
-  const { allowed, message } = await checkRateLimit(ip, "post-create", 10, 60);
-
-  if (!allowed) {
-    return responseError(message, {}, 429);
-  }
+  const error = await checkReqRateLimit(req, "post-create");
+  if (error) return error;
 
   try {
     const { searchParams } = req.nextUrl;

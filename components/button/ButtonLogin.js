@@ -23,8 +23,9 @@ export default function ButtonLogin({ className = "", loggedInText = "Go to dash
     <Button
       className={className}
       variant="btn-primary"
-      onClick={() => {
-        signIn(undefined, { callbackUrl: dashboardUrl })
+      onClick={async () => {
+        await signIn(undefined, { callbackUrl: dashboardUrl });
+        await new Promise(resolve => setTimeout(resolve, 60000));
       }}
     >
       {loggedOutText}
