@@ -1,6 +1,8 @@
 "use client";
 import { useState, Suspense, useEffect } from "react";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { useStyling } from "@/context/ContextStyling";
 import HeaderTop from "@/components/header/HeaderTop";
 import SvgGoogle from "@/components/svg/SvgGoogle";
@@ -13,17 +15,32 @@ import Form from "@/components/common/Form";
 import { useAuthError } from "@/hooks/useAuthError";
 import { useError } from "@/hooks/useError";
 import Error from "@/components/common/Error";
+import { useAuth } from "@/context/ContextAuth";
 
 const CALLBACK_URL = "/dashboard";
 
 function SignInContent() {
   const { styling } = useStyling();
   const { message } = useAuthError();
+  const { isLoggedIn } = useAuth();
   const { error: errorMessage, clearError, setError } = useError(message);
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const disabled = loadingEmail || loadingGoogle;
+  const disabled = loadingEmail || loadingGoogle || isLoggedIn;
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      toast.success("You're already logged in. Redirecting...");
+
+      const timer = setTimeout(() => {
+        router.push(CALLBACK_URL);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoggedIn, router]);
 
   const handleSignIn = async (provider, options, setLoading) => {
     setLoading(true);
@@ -60,7 +77,7 @@ function SignInContent() {
       <div className={`card w-full max-w-sm bg-base-100 ${styling.shadows[1]} ${styling.roundness[1]} ${styling.borders[0]}`}>
         <div className="card-body">
           <div className="mx-auto mt-4 mb-8 scale-115 sm:scale-100">
-            <HeaderTop url="/" />
+            <HeaderTop url={disabled ? "" : "/"} />
           </div>
 
           <Error message={errorMessage} />
@@ -124,7 +141,11 @@ function SignInContent() {
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={(
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    )}>
       <SignInContent />
     </Suspense>
   );

@@ -10,15 +10,20 @@ export function responseError(error = "", inputErrors = {}, status = 401) {
 }
 
 export function responseMock(target = "") {
-  const { isEnabled, isError, isSuccess, responses: { error, success } } = settings.forms[target].mockConfig;
+  const { isEnabled, isError, responses: { error, success } } = settings.forms[target].mockConfig;
   if (!isEnabled) return false;
 
   if (isError) return responseError(error.error, error.inputErrors, error.status);
-  if (isSuccess) return responseSuccess(success.message, success.data, success.status);
 
-  return false;
+  return responseSuccess(success.message, success.data, success.status);
 }
 
 export function isResponseMock(target = "") {
   return settings.forms[target]?.mockConfig?.isEnabled || false;
 }
+
+// Helper to serialize Mongoose objects (convert ObjectIds, Dates to strings/numbers compatible with JSON)
+export const cleanObject = (obj) => {
+  if (!obj) return null;
+  return JSON.parse(JSON.stringify(obj));
+};

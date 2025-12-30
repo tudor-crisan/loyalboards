@@ -29,15 +29,11 @@
     "hasThemeEmails": true
   },
   "rateLimits": {
-    "post-create": {
-      "limit": 10,
-      "window": 60
+    "auth-magic-link": {
+      "limit": 5,
+      "window": 300
     },
-    "board-create": {
-      "limit": 10,
-      "window": 60
-    },
-    "board-delete": {
+    "auth-google-signin": {
       "limit": 10,
       "window": 60
     },
@@ -48,20 +44,9 @@
     "billing-create-portal": {
       "limit": 10,
       "window": 60
-    },
-    "auth-magic-link": {
-      "limit": 5,
-      "window": 300
-    },
-    "auth-google-signin": {
-      "limit": 10,
-      "window": 60
     }
   },
   "pages": {
-    "dashboard": {
-      "component": "LoyalBoardsDashboard"
-    },
     "paths": {
       "previewEmail": {
         "source": "/preview/email",
@@ -71,6 +56,20 @@
         "source": "/success",
         "destination": "/modules/billing/success"
       }
+    }
+  },
+  "metadata": {
+    "home": {
+      "title": "{seoTitle}",
+      "description": "{seoDescription}"
+    },
+    "dashboard": {
+      "title": "Dashboard - {appName}",
+      "description": "{seoTagline}"
+    },
+    "auth": {
+      "title": "Authenticate - {appName}",
+      "description": "{seoTagline}"
     }
   },
   "forms": {
