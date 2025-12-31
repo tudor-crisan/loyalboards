@@ -5,7 +5,7 @@
     "description": "",
     "tagline": ""
   },
-  "modules": [""],
+  "modules": [],
   "pages": {
     "dashboard": {
       "component": ""
