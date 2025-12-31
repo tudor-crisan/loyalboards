@@ -5,10 +5,10 @@
     "description": "",
     "tagline": ""
   },
-  "modules": [],
+  "modules": ["boards"],
   "pages": {
     "dashboard": {
-      "component": ""
+      "component": "LoyalBoardsDashboard"
     }
   }
 }
