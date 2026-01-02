@@ -1,61 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import EmptyState from "@/components/common/EmptyState";
+import SvgPost from "@/components/svg/SvgPost";
 import ItemDisplay from "@/components/list/ItemDisplay";
 import BoardButtonVote from "@/components/modules/boards/BoardUpvoteButton";
-import toast from "react-hot-toast";
+import useBoardPosts from "@/hooks/modules/boards/useBoardPosts";
 
 const BoardPostsList = ({ posts, boardId }) => {
-  const [postsState, setPostsState] = useState(posts);
+  const { posts: postsState, handleVote } = useBoardPosts(boardId, posts, { showVoteToast: true });
 
-  const handleVote = (postId, newVoteCount) => {
-    setPostsState((prevPosts) => {
-      // 1. Update the specific post
-      const updatedPosts = prevPosts.map((post) => {
-        if (post._id === postId) {
-          return { ...post, votesCounter: newVoteCount };
-        }
-        return post;
-      });
-
-      // 2. Sort the array
-      // Primary sort: votesCounter (desc)
-      // Secondary sort: createdAt (desc)
-      return updatedPosts.sort((a, b) => {
-        if (b.votesCounter !== a.votesCounter) {
-          return b.votesCounter - a.votesCounter;
-        }
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      });
-    });
-  };
-
-  // Real-time updates with SSE
-  useEffect(() => {
-    const eventSource = new EventSource("/api/modules/boards/stream");
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-
-        if (data.type === "vote" && data.boardId === boardId) {
-          handleVote(data.postId, data.votesCounter);
-          toast.success("Board updated!");
-        }
-      } catch (error) {
-        console.error("SSE parse error", error);
-      }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error("EventSource failed:", error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [boardId]);
+  if (!postsState || postsState.length === 0) {
+    return (
+      <EmptyState
+        title="Be the first to post"
+        description="Create a new post to see it here"
+        icon={<SvgPost size="size-16" />}
+      />
+    );
+  }
 
   return (
     <ItemDisplay

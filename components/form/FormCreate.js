@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+import { clientApi } from "@/libs/api";
 import { defaultSetting as settings } from "@/libs/defaults";
 import { useRouter } from "next/navigation";
 import useApiRequest from "@/hooks/useApiRequest";
@@ -13,7 +13,7 @@ import { useStyling } from "@/context/ContextStyling";
 import Title from "@/components/common/Title";
 import Label from "@/components/common/Label";
 
-export default function FormCreate({ type, queryParams = {} }) {
+export default function FormCreate({ type, queryParams = {}, skipRefresh = false }) {
   const router = useRouter();
   const { formConfig, inputsConfig } = settings.forms[type];
   const { styling } = useStyling();
@@ -40,11 +40,13 @@ export default function FormCreate({ type, queryParams = {} }) {
       : formConfig.apiUrl;
 
     await request(
-      () => axios.post(url, { ...inputs }),
+      () => clientApi.post(url, { ...inputs }),
       {
         onSuccess: () => {
           resetInputs();
-          router.refresh();
+          if (!skipRefresh) {
+            router.refresh();
+          }
         },
         onError: (_, validationErrors) => {
           if (validationErrors) {
@@ -100,6 +102,7 @@ export default function FormCreate({ type, queryParams = {} }) {
               disabled={loading}
               rows={config.rows || 3}
               maxLength={config.maxlength}
+              showCharacterCount={config.showCharacterCount ?? formConfig.showCharacterCount}
             />
           ) : (
             <Input
@@ -113,6 +116,7 @@ export default function FormCreate({ type, queryParams = {} }) {
               onChange={(e) => handleChange(target, e.target.value)}
               disabled={loading}
               maxLength={config.maxlength}
+              showCharacterCount={config.showCharacterCount ?? formConfig.showCharacterCount}
             />
           )}
 

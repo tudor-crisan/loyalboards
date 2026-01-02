@@ -1,7 +1,7 @@
 "use client";
 import { useStyling } from "@/context/ContextStyling";
 
-export default function Input({ className = "", error, ...props }) {
+export default function Input({ className = "", error, showCharacterCount, ...props }) {
   const { styling } = useStyling();
 
   // Basic defaults for text-like inputs
@@ -16,6 +16,20 @@ export default function Input({ className = "", error, ...props }) {
 
   // Helper for error state
   const errorClass = error ? "input-error" : "";
+
+  if (showCharacterCount && props.maxLength) {
+    return (
+      <div className="relative w-full">
+        <input
+          className={`${defaultClasses} ${errorClass} ${className} w-full pr-12`.trim()}
+          {...props}
+        />
+        <div className="absolute right-3 bottom-2 text-[10px] text-base-content/40 font-medium pointer-events-none">
+          {props.value?.length || 0} / {props.maxLength}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <input

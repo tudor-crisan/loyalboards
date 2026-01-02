@@ -47,10 +47,12 @@ export async function POST(req) {
     await post.save();
 
     // Emit vote event
+    const clientId = req.headers.get("x-client-id");
     boardEvents.emit("vote", {
       postId: post._id,
       votesCounter: post.votesCounter,
-      boardId: post.boardId
+      boardId: post.boardId,
+      clientId
     });
 
     return responseSuccess(voteRecorded.message, {}, voteRecorded.status)
@@ -62,6 +64,10 @@ export async function POST(req) {
 }
 
 export async function DELETE(req) {
+  if (isResponseMock(TYPE)) {
+    return responseMock(TYPE);
+  };
+
   const error = await checkReqRateLimit(req, "vote-toggle");
   if (error) return error;
 
@@ -85,10 +91,12 @@ export async function DELETE(req) {
     await post.save();
 
     // Emit vote event
+    const clientId = req.headers.get("x-client-id");
     boardEvents.emit("vote", {
       postId: post._id,
       votesCounter: post.votesCounter,
-      boardId: post.boardId
+      boardId: post.boardId,
+      clientId
     });
 
     return responseSuccess(voteRemoved.message, {}, voteRemoved.status);

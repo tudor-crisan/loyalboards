@@ -1,9 +1,9 @@
 {
-  "appName": "",
+  "appName": "LoyalBoards",
   "seo": {
-    "title": "",
-    "description": "",
-    "tagline": ""
+    "title": "Collect customer feedback to build better products",
+    "description": "Create a feedback board in minutes, prioritize features, and build products your customers will love.",
+    "tagline": "Create feedback boards your customers will love."
   },
   "modules": ["boards"],
   "pages": {
