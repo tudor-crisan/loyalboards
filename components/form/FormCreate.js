@@ -59,7 +59,7 @@ export default function FormCreate({ type, queryParams = {}, skipRefresh = false
 
   return (
     <form
-      className={`${styling.roundness[1]} ${styling.borders[0]} ${styling.shadows[0]} space-y-4 bg-base-100 px-4 py-8 ${formConfig.className}`}
+      className={`${styling.components.card} space-y-4 ${styling.general.box} ${formConfig.className || ''}`}
       onSubmit={handleSubmit}
     >
       {formConfig.title && (

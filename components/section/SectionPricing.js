@@ -4,17 +4,18 @@ import { useCopywriting } from "@/context/ContextCopywriting";
 import PricingCard from "@/components/pricing/PricingCard";
 import PricingButton from "@/components/pricing/PricingButton";
 import SvgCheck from "@/components/svg/SvgCheck";
+import { cn } from "@/libs/utils.client";
 
 export default function SectionPricing() {
   const { styling } = useStyling();
   const { copywriting } = useCopywriting();
   return (
     <section id="pricing" className="bg-base-200">
-      <div className={`${styling.general.container} ${styling.general.spacing}`}>
-        <p className={`${styling.general.label} mb-2`}>
+      <div className={cn(`${styling.general.container} ${styling.general.box}`, 'py-32!')}>
+        <p className={`${styling.section.label} mb-2`}>
           {copywriting.SectionPricing.label}
         </p>
-        <h2 className={`${styling.general.title} mb-12 text-center`}>
+        <h2 className={`${styling.section.title} mb-12 text-center`}>
           {copywriting.SectionPricing.headline}
         </h2>
         <PricingCard>
@@ -28,7 +29,7 @@ export default function SectionPricing() {
           </div>
           <ul className="space-y-1">
             {copywriting.SectionPricing.features.map((feature, index) => (
-              <li key={index} className="flex items-center text-sm gap-1">
+              <li key={index} className={`${styling.flex.items_center} text-sm gap-1`}>
                 <SvgCheck />
                 <p>
                   {feature}

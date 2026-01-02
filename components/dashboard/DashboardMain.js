@@ -1,7 +1,13 @@
 
+"use client";
+
+import { useStyling } from "@/context/ContextStyling";
+
 export default function DashboardMain({ children, className = "" }) {
+  const { styling } = useStyling();
+
   return (
-    <section className={`max-w-5xl mx-auto px-5 py-6 ${className}`}>
+    <section className={`${styling.general.container} mx-auto ${styling.general.box} ${className}`}>
       {children}
     </section>
   )
