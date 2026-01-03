@@ -31,7 +31,10 @@
   },
   "modules": [],
   "auth": {
-    "providers": ["resend", "google"],
+    "providers": [
+      "resend",
+      "google"
+    ],
     "hasThemePages": true,
     "hasThemeEmails": true
   },
@@ -53,30 +56,67 @@
       "window": 60
     }
   },
-  "pages": {
-    "dashboard": {
-      "component": ""
+  "components": {
+    "dashboard": ""
+  },
+  "paths": {
+    "previewEmail": {
+      "source": "/preview/email",
+      "destination": "/modules/preview/email"
     },
-    "paths": {
-      "previewEmail": {
-        "source": "/preview/email",
-        "destination": "/modules/preview/email"
+    "billingSuccess": {
+      "source": "/success",
+      "destination": "/modules/billing/success"
+    },
+    "terms": {
+      "source": "/terms",
+      "destination": "/tos/terms"
+    },
+    "privacy": {
+      "source": "/privacy",
+      "destination": "/tos/privacy"
+    },
+    "support": {
+      "source": "/support",
+      "destination": "/tos/support"
+    },
+    "dashboard": {
+      "source": "/dashboard",
+      "destination": "/dashboard"
+    },
+    "signin": {
+      "source": "/auth/signin",
+      "destination": "/auth/signin"
+    },
+    "signout": {
+      "source": "/auth/signout",
+      "destination": "/auth/signout"
+    },
+    "error": {
+      "source": "/auth/error",
+      "destination": "/auth/error"
+    },
+    "verifyRequest": {
+      "source": "/auth/verify-request",
+      "destination": "/auth/verify-request"
+    },
+    "home": {
+      "source": "/",
+      "destination": "/"
+    },
+    "api": {
+      "billingCreateCheckout": "/api/billing/create-checkout",
+      "billingCreatePortal": "/api/billing/create-portal",
+      "boardsStream": "/api/modules/boards/stream",
+      "boardsDetail": "/api/modules/boards/board",
+      "boardsPost": "/api/modules/boards/post"
+    },
+    "integrations": {
+      "resend": {
+        "baseUrl": "https://api.resend.com/"
       },
-      "billingSuccess": {
-        "source": "/success",
-        "destination": "/modules/billing/success"
-      },
-      "terms": {
-        "source": "/terms",
-        "destination": "/tos/terms"
-      },
-      "privacy": {
-        "source": "/privacy",
-        "destination": "/tos/privacy"
-      },
-      "support": {
-        "source": "/support",
-        "destination": "/tos/support"
+      "googleFonts": {
+        "baseUrl": "https://fonts.googleapis.com/css2"
       }
     }
   },

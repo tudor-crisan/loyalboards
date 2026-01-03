@@ -22,9 +22,9 @@ const nextConfig = {
     if (!setting) return [];
 
     const appSettings = getMergedConfigWithModules("setting", setting, settings);
-    const paths = appSettings?.pages?.paths;
+    const paths = appSettings?.paths;
 
-    return paths ? Object.values(paths) : [];
+    return paths ? Object.values(paths).filter(path => path.source && path.destination) : [];
   },
 };
 

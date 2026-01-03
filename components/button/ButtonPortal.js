@@ -3,15 +3,16 @@ import { clientApi } from "@/libs/api";
 import Button from "@/components/button/Button";
 import useApiRequest from "@/hooks/useApiRequest";
 import SvgUser from "@/components/svg/SvgUser";
+import { defaultSetting as settings } from "@/libs/defaults";
 
-const RETURN_URL_REDIRECT = "/dashboard";
+const RETURN_URL_REDIRECT = settings.paths.dashboard.source;
 
 const ButtonPortal = ({ className = "", variant = "btn-primary", children = "Billing", ...props }) => {
   const { loading, request } = useApiRequest();
 
   const handleBilling = async () => {
     await request(
-      () => clientApi.post("/api/billing/create-portal", {
+      () => clientApi.post(settings.paths.api.billingCreatePortal, {
         returnUrl: window.location.origin + RETURN_URL_REDIRECT,
       }),
       {
