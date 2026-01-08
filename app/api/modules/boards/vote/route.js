@@ -4,11 +4,8 @@ import { isResponseMock, responseMock, responseSuccess, responseError } from "@/
 import { defaultSetting as settings } from "@/libs/defaults";
 import Post from "@/models/modules/boards/Post";
 import { checkReqRateLimit } from "@/libs/rateLimit";
-import boardEvents from "@/libs/modules/boards/events";
 
 const TYPE = "Vote";
-
-
 
 const {
   serverError,
@@ -48,17 +45,13 @@ export async function POST(req) {
       return responseError(postNotFound.message, {}, postNotFound.status);
     }
 
+    const clientId = req.headers.get("x-client-id");
+
     post.votesCounter += 1;
+    post.lastActionByClientId = clientId;
     await post.save();
 
-    // Emit vote event
-    const clientId = req.headers.get("x-client-id");
-    boardEvents.emit("vote", {
-      postId: post._id,
-      votesCounter: post.votesCounter,
-      boardId: post.boardId,
-      clientId
-    });
+    // Emitting via Change Stream now (handled in stream/route.js)
 
     return responseSuccess(voteRecorded.message, {}, voteRecorded.status)
 
@@ -102,17 +95,11 @@ export async function DELETE(req) {
       return responseError(postNotFound.message, {}, postNotFound.status);
     }
 
-    post.votesCounter -= 1;
-    await post.save();
-
-    // Emit vote event
     const clientId = req.headers.get("x-client-id");
-    boardEvents.emit("vote", {
-      postId: post._id,
-      votesCounter: post.votesCounter,
-      boardId: post.boardId,
-      clientId
-    });
+
+    post.votesCounter -= 1;
+    post.lastActionByClientId = clientId;
+    await post.save();
 
     return responseSuccess(voteRemoved.message, {}, voteRemoved.status);
   } catch (e) {
