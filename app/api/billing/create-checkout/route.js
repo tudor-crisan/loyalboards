@@ -58,19 +58,46 @@ export async function POST(req) {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    const stripeCheckoutSession = await stripe.checkout.sessions.create({
-      mode: "subscription",
+    const type = body.type; // 'monthly' or 'lifetime'
+    let priceId = process.env.STRIPE_PRICE_ID;
+    let mode = "subscription";
+
+    if (type === "lifetime") {
+      priceId = process.env.STRIPE_PRICE_ID_LIFETIME;
+      mode = "payment";
+    }
+
+    if (!priceId) {
+      console.error(`Stripe price ID missing for type: ${type}`);
+      return responseError(serverError.message, {}, serverError.status);
+    }
+
+    const stripeSessionConfig = {
+      mode: mode,
       line_items: [
         {
-          price: process.env.STRIPE_PRICE_ID,
+          price: priceId,
           quantity: 1,
         },
       ],
       success_url: body.successUrl,
       cancel_url: body.cancelUrl,
-      customer_email: user.email,
       client_reference_id: user._id.toString(),
-    });
+    };
+
+    if (user.customerId) {
+      stripeSessionConfig.customer = user.customerId;
+    } else {
+      stripeSessionConfig.customer_email = user.email;
+
+      // Force customer creation for one-time payments so we can use the billing portal later
+      if (mode === "payment") {
+        stripeSessionConfig.customer_creation = "always";
+        stripeSessionConfig.invoice_creation = { enabled: true };
+      }
+    }
+
+    const stripeCheckoutSession = await stripe.checkout.sessions.create(stripeSessionConfig);
 
     return responseSuccess(checkoutCreated.message, { url: stripeCheckoutSession.url }, checkoutCreated.status);
   } catch (e) {

@@ -2,7 +2,9 @@
 import { useStyling } from "@/context/ContextStyling";
 import { useCopywriting } from "@/context/ContextCopywriting";
 import PricingCard from "@/components/pricing/PricingCard";
+import PricingPlanCard from "@/components/pricing/PricingPlanCard";
 import PricingButton from "@/components/pricing/PricingButton";
+import Divider from "@/components/common/Divider";
 import SvgCheck from "@/components/svg/SvgCheck";
 import { cn } from "@/libs/utils.client";
 
@@ -19,13 +21,29 @@ export default function SectionPricing() {
           {copywriting.SectionPricing.headline}
         </h2>
         <PricingCard>
-          <div className="flex items-baseline mb-4">
-            <div className="text-4xl font-black">
-              {copywriting.SectionPricing.price}
+          <div className="flex flex-col gap-3 mb-6">
+            {/* Monthly Plan */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline">
+                <div className="text-3xl font-black">
+                  {copywriting.SectionPricing.formattedPlans.monthly.price}
+                </div>
+                <div className="text-sm font-medium opacity-60">
+                  {copywriting.SectionPricing.formattedPlans.monthly.period}
+                </div>
+              </div>
+              <div className="text-sm font-medium opacity-60">
+                {copywriting.SectionPricing.formattedPlans.monthly.label}
+              </div>
             </div>
-            <div className="text-sm font-medium opacity-60">
-              {copywriting.SectionPricing.period}
-            </div>
+
+            <Divider />
+
+            {/* Lifetime Plan */}
+            <PricingPlanCard
+              item={copywriting.SectionPricing.formattedPlans.lifetime}
+              isBestOffer={true}
+            />
           </div>
           <ul className="space-y-1">
             {copywriting.SectionPricing.features.map((feature, index) => (
