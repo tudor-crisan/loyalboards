@@ -58,6 +58,7 @@
       "inputsConfig": {
         "title": {
           "type": "text",
+          "className": "w-full",
           "required": false,
           "value": "",
           "label": "Short, descriptive title",
@@ -67,6 +68,7 @@
         },
         "description": {
           "type": "textarea",
+          "className": "w-full",
           "required": false,
           "value": "",
           "label": "Description",
@@ -229,6 +231,31 @@
           }
         }
       }
+    }
+  },
+  "defaultExtraSettings": {
+    "form": {
+      "title": "Suggest a feature",
+      "button": "Add Post",
+      "inputs": {
+        "title": {
+          "label": "Short, descriptive title",
+          "placeholder": "Green buttons plz",
+          "maxlength": 60,
+          "showCharacterCount": true
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "The login button color should be green to match our brand colors.",
+          "rows": 4,
+          "maxlength": 400,
+          "showCharacterCount": true
+        }
+      }
+    },
+    "emptyState": {
+      "title": "Be the first to post",
+      "description": "Create a new post to see it here"
     }
   }
 }

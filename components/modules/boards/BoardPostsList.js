@@ -10,7 +10,7 @@ import ItemDisplay from "@/components/list/ItemDisplay";
 import BoardButtonVote from "@/components/modules/boards/BoardUpvoteButton";
 import useBoardPosts from "@/hooks/modules/boards/useBoardPosts";
 
-const BoardPostsList = ({ posts, boardId }) => {
+const BoardPostsList = ({ posts, boardId, emptyStateConfig = {} }) => {
   const { posts: postsState, handleVote, isBoardDeleted } = useBoardPosts(boardId, posts, { showVoteToast: true });
   const router = useRouter();
 
@@ -26,6 +26,9 @@ const BoardPostsList = ({ posts, boardId }) => {
     }
   }, [isBoardDeleted, router]);
 
+  const emptyStateTitle = emptyStateConfig?.title || settings.defaultExtraSettings.emptyState.title;
+  const emptyStateDescription = emptyStateConfig?.description || settings.defaultExtraSettings.emptyState.description;
+
   return (
     <div className="w-full min-w-0 relative">
       {isBoardDeleted && (
@@ -33,8 +36,8 @@ const BoardPostsList = ({ posts, boardId }) => {
       )}
       {(!postsState || postsState.length === 0) ? (
         <EmptyState
-          title="Be the first to post"
-          description="Create a new post to see it here"
+          title={emptyStateTitle}
+          description={emptyStateDescription}
           icon={<SvgPost size="size-16" />}
         />
       ) : (

@@ -10,24 +10,42 @@ import { clientApi } from "@/libs/api";
 import { defaultSetting as settings } from "@/libs/defaults";
 import TextSmall from "@/components/common/TextSmall";
 import { createSlug } from "@/libs/utils.client";
+import BoardExtraSettings from "@/components/modules/boards/BoardExtraSettings";
 
-export default function BoardEditModal({ boardId, currentSlug, currentName, className = "" }) {
+export default function BoardEditModal({ boardId, currentSlug, currentName, extraSettings = {}, className = "" }) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [slug, setSlug] = useState(currentSlug || "");
+  const defaultTemplate = settings.defaultExtraSettings;
+
+  // Check if extraSettings is empty object or null/undefined
+  const hasSettings = extraSettings && Object.keys(extraSettings).length > 0;
+
+  const [settingsState, setSettingsState] = useState(
+    hasSettings ? extraSettings : defaultTemplate
+  );
+
   const { loading, request } = useApiRequest();
 
-  // Default slug generation from name if empty and no current slug
+  // Reset/Sync state when modal opens
   const handleOpen = () => {
     if (!slug && !currentSlug) {
       setSlug(createSlug(currentName));
     }
+
+    // Always sync with latest prop when opening
+    if (extraSettings && Object.keys(extraSettings).length > 0) {
+      setSettingsState(extraSettings);
+    } else {
+      setSettingsState(defaultTemplate);
+    }
+
     setIsModalOpen(true);
   };
 
   const handleSave = async () => {
     await request(
-      () => clientApi.put(settings.paths.api.boardsDetail, { boardId, slug }),
+      () => clientApi.put(settings.paths.api.boardsDetail, { boardId, slug, extraSettings: settingsState }),
       {
         onSuccess: () => {
           setIsModalOpen(false);
@@ -40,10 +58,7 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, clas
 
   return (
     <div className={className}>
-      <Button
-        onClick={handleOpen}
-        variant="btn-secondary"
-      >
+      <Button onClick={handleOpen}>
         Edit board
       </Button>
 
@@ -51,6 +66,7 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, clas
         isModalOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Edit Board"
+        boxClassName="max-w-7xl"
         actions={
           <>
             <Button
@@ -69,23 +85,35 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, clas
           </>
         }
       >
-        <div className="space-y-4">
-          <div className="space-y-2">
+        <div className="flex flex-col gap-6">
+          <div className="space-y-2 border-b border-base-200 pb-6">
             <Label>Board Slug</Label>
-            <Input
-              value={slug}
-              onChange={(e) => setSlug(createSlug(e.target.value, false))}
-              placeholder="e.g. my-awesome-board"
-              maxLength={30}
-              showCharacterCount={true}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <Input
+                  value={slug}
+                  onChange={(e) => setSlug(createSlug(e.target.value, false))}
+                  placeholder="e.g. my-awesome-board"
+                  maxLength={30}
+                  showCharacterCount={true}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <TextSmall>
+              This will change the public link to your board. You can only change this once per day.
+            </TextSmall>
+          </div>
+
+          <div className="min-h-0">
+            <BoardExtraSettings
+              settings={settingsState}
+              onChange={setSettingsState}
               disabled={loading}
             />
           </div>
-          <TextSmall>
-            This will change the public link to your board. You can only change this once per day.
-          </TextSmall>
         </div>
-      </Modal>
-    </div>
+      </Modal >
+    </div >
   );
 }
