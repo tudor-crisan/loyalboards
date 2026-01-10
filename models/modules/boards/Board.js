@@ -10,6 +10,19 @@ const boardSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  slug: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true,
+    maxlength: 30
+  },
+  previousSlugs: [{
+    type: String
+  }],
+  lastSlugUpdate: {
+    type: Date
   }
 }, {
   timestamps: true

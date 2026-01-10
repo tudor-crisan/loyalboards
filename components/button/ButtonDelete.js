@@ -1,10 +1,13 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { clientApi } from "@/libs/api";
 import useApiRequest from "@/hooks/useApiRequest";
 import SvgTrash from "@/components/svg/SvgTrash";
 import Button from "@/components/button/Button";
+import Modal from "@/components/common/Modal";
 import { defaultSetting as settings } from "@/libs/defaults";
+import Paragraph from "@/components/common/Paragraph";
 
 export default function ButtonDelete({
   url = "",
@@ -18,12 +21,17 @@ export default function ButtonDelete({
 }) {
   const router = useRouter();
   const { loading, request } = useApiRequest();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = async () => {
-    if (withConfirm && !window.confirm(confirmMessage)) {
+    if (withConfirm) {
+      setIsModalOpen(true);
       return;
     }
+    await confirmDelete();
+  };
 
+  const confirmDelete = async () => {
     await request(
       () => clientApi.delete(url),
       {
@@ -33,6 +41,7 @@ export default function ButtonDelete({
           } else if (withRedirect) {
             router.push(redirectUrl);
           }
+          setIsModalOpen(false);
         },
         keepLoadingOnSuccess: withRedirect,
         showToast: withToast
@@ -41,13 +50,43 @@ export default function ButtonDelete({
   };
 
   return (
-    <Button
-      isLoading={loading}
-      variant="btn-error"
-      onClick={() => handleDelete()}
-      startIcon={<SvgTrash />}
-    >
-      {buttonText}
-    </Button>
-  )
+    <>
+      <Button
+        isLoading={loading}
+        variant="btn-error"
+        onClick={() => handleDelete()}
+        startIcon={<SvgTrash />}
+      >
+        {buttonText}
+      </Button>
+
+      <Modal
+        isModalOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Confirm Deletion"
+        actions={
+          <>
+            <Button
+              className="btn-ghost"
+              onClick={() => setIsModalOpen(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="btn-error"
+              onClick={confirmDelete}
+              isLoading={loading}
+            >
+              Delete
+            </Button>
+          </>
+        }
+      >
+        <Paragraph className="text-center">
+          {confirmMessage}
+        </Paragraph>
+      </Modal>
+    </>
+  );
 }
