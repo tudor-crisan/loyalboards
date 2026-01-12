@@ -1,23 +1,24 @@
 "use client";
 import Link from "next/link";
-import { defaultStyling as styling } from "@/libs/defaults";
+import { useStyling } from "@/context/ContextStyling";
 import Title from "@/components/common/Title";
 import { pluralize } from "@/libs/utils.client";
 import SvgView from "@/components/svg/SvgView";
 import { useState } from "react";
 import IconLoading from "@/components/icon/IconLoading";
 
-function ListItem({ item, hasLink, isLoading }) {
+function ListItem({ item, hasLink, isLoading, styling }) {
   return hasLink ? (
     <div className={styling.flex.between}>
-      {item.name}
-      {isLoading ? <IconLoading /> : <SvgView size="size-4 sm:size-5" />}
+      <span className="truncate pr-2 text-sm sm:text-base font-medium">{item.name}</span>
+      {isLoading ? <IconLoading /> : <SvgView size="size-4 sm:size-5 shrink-0" />}
     </div>
   ) : (
     <div>{item.name}</div>
   );
 }
 export default function ListDisplay({ list, type = "Board" }) {
+  const { styling } = useStyling();
   const [loadingItem, setLoadingItem] = useState(null);
   const itemClass = `${styling.components.card} block ${styling.general.box}`;
   const linkClass = 'hover:bg-neutral hover:text-neutral-content duration-200';
@@ -37,7 +38,7 @@ export default function ListDisplay({ list, type = "Board" }) {
               {href ? (
                 isLoading ? (
                   <div className={`${itemClass} opacity-50 cursor-wait`}>
-                    <ListItem item={item} hasLink={true} isLoading={true} />
+                    <ListItem item={item} hasLink={true} isLoading={true} styling={styling} />
                   </div>
                 ) : (
                   <Link
@@ -45,11 +46,11 @@ export default function ListDisplay({ list, type = "Board" }) {
                     className={`${itemClass} ${linkClass}`}
                     onClick={() => setLoadingItem(item._id)}
                   >
-                    <ListItem item={item} hasLink={true} isLoading={false} />
+                    <ListItem item={item} hasLink={true} isLoading={false} styling={styling} />
                   </Link>
                 )
               ) : (
-                <ListItem item={item} hasLink={false} />
+                <ListItem item={item} hasLink={false} styling={styling} />
               )}
             </li>
           );

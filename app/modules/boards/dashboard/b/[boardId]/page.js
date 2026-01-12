@@ -10,7 +10,7 @@ import Columns from "@/components/common/Columns";
 import Sidebar from "@/components/common/Sidebar";
 import Label from "@/components/common/Label";
 import Vertical from "@/components/common/Vertical";
-import DashboardPostsList from "@/components/modules/boards/DashboardPostsList";
+import BoardPrivatePostsList from "@/components/modules/boards/BoardPrivatePostsList";
 import BoardEditModal from "@/components/modules/boards/BoardEditModal";
 import { defaultSetting as settings } from "@/libs/defaults";
 import { getBoardPrivate } from "@/libs/modules/boards/db";
@@ -49,7 +49,7 @@ export default async function PrivateFeedbackBoard({ params }) {
         <Columns>
           <Sidebar>
             <div className="space-y-4">
-              <Title>
+              <Title className="line-clamp-2 break-all">
                 {board.name}
               </Title>
               <Vertical>
@@ -71,11 +71,12 @@ export default async function PrivateFeedbackBoard({ params }) {
                 <ButtonDelete
                   url={deleteUrl}
                   buttonText="Delete board"
+                  confirmMessage="Are you sure you want to delete? All associated posts will also be deleted."
                 />
               </div>
             </div>
           </Sidebar>
-          <DashboardPostsList
+          <BoardPrivatePostsList
             posts={board.posts}
             boardId={boardId}
           />

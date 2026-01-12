@@ -4,6 +4,7 @@ import { isResponseMock, responseMock, responseSuccess, responseError } from "@/
 import { defaultSetting as settings } from "@/libs/defaults";
 import User from "@/models/User";
 import Board from "@/models/modules/boards/Board";
+import Post from "@/models/modules/boards/Post";
 import { checkReqRateLimit } from "@/libs/rateLimit";
 import { revalidatePath } from "next/cache";
 
@@ -61,7 +62,7 @@ export async function POST(req) {
     }
 
     // Generate unique slug
-    let slug = body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    let slug = body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
     let existingBoard = await Board.findOne({ slug });
     if (existingBoard) {
       slug = `${slug}-${Date.now()}`;
@@ -123,7 +124,9 @@ export async function DELETE(req) {
     await Board.deleteOne({
       _id: boardId,
       userId: userId
-    })
+    });
+
+    await Post.deleteMany({ boardId: boardId });
 
     return responseSuccess(deleteSuccesfully.message, {}, deleteSuccesfully.status)
 
@@ -157,7 +160,7 @@ export async function PUT(req) {
     }
 
     const body = await req.json();
-    const { boardId, slug } = body;
+    const { boardId, slug, name } = body;
 
     if (!boardId || !slug) {
       return responseError(boardIdRequired.message, {}, boardIdRequired.status);
@@ -183,16 +186,16 @@ export async function PUT(req) {
       return responseError("Board not found", {}, 404);
     }
 
+    // Validate slug format
+    const newSlug = slug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
+
     // Check rate limit (1 day)
-    if (board.lastSlugUpdate) {
+    if (board.slug !== newSlug && board.lastSlugUpdate) {
       const oneDay = 24 * 60 * 60 * 1000;
       if (new Date() - new Date(board.lastSlugUpdate) < oneDay) {
         return responseError(rateLimitExceeded.message, {}, rateLimitExceeded.status);
       }
     }
-
-    // Validate slug format
-    const newSlug = slug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
     if (newSlug.length < 3) {
       return responseError(slugTooShort.message, {}, slugTooShort.status);
@@ -211,6 +214,10 @@ export async function PUT(req) {
     }
 
     board.slug = newSlug;
+
+    if (name && board.name !== name) {
+      board.name = name;
+    }
 
     if (body.extraSettings) {
       try {
