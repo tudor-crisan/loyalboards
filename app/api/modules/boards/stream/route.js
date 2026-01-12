@@ -1,6 +1,7 @@
 import connectMongo from "@/libs/mongoose";
 import Post from "@/models/modules/boards/Post";
 import Board from "@/models/modules/boards/Board";
+import Comment from "@/models/modules/boards/Comment";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +64,33 @@ export async function GET(req) {
         }
       });
 
+      const commentChangeStream = Comment.watch([], { fullDocument: 'updateLookup' });
+
+      commentChangeStream.on("change", (change) => {
+        if (change.operationType === "insert") {
+          sendEvent({
+            type: "comment-update",
+            postId: change.fullDocument.postId.toString(),
+            boardId: change.fullDocument.boardId.toString(),
+            action: "add",
+            comment: change.fullDocument
+          });
+        }
+        if (change.operationType === "update") {
+          const updatedFields = change.updateDescription.updatedFields;
+          if (updatedFields && updatedFields.isDeleted === true) {
+            sendEvent({
+              type: "comment-update",
+              // With updateLookup we get fullDocument
+              postId: change.fullDocument.postId.toString(),
+              boardId: change.fullDocument.boardId.toString(),
+              action: "remove",
+              commentId: change.documentKey._id.toString()
+            });
+          }
+        }
+      });
+
       // Keep connection alive
       const keepAlive = setInterval(() => {
         controller.enqueue(encoder.encode(": keep-alive\n\n"));
@@ -72,6 +100,7 @@ export async function GET(req) {
         clearInterval(keepAlive);
         changeStream.close();
         boardChangeStream.close();
+        commentChangeStream.close();
         controller.close();
       });
 

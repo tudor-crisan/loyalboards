@@ -49,8 +49,52 @@ export const getBoardPrivate = cache(async (boardId, populate = "") => {
     if (!board) return null;
 
     if (populate && populate.includes("posts")) {
-      const posts = await Post.find({ boardId: board._id }).sort({ votesCounter: -1, createdAt: -1 }).lean();
-      board.posts = posts;
+      const posts = await Post.aggregate([
+        {
+          $match: {
+            boardId: board._id
+          }
+        },
+        {
+          $lookup: {
+            from: "comments",
+            let: { postId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ["$postId", "$$postId"] },
+                  isDeleted: { $ne: true }
+                }
+              }
+            ],
+            as: "comments"
+          }
+        },
+        {
+          $addFields: {
+            commentsCount: { $size: "$comments" }
+          }
+        },
+        {
+          $project: {
+            comments: 0
+          }
+        },
+        {
+          $sort: {
+            votesCounter: -1,
+            createdAt: -1
+          }
+        }
+      ]);
+      board.posts = posts.map(post => ({
+        ...post,
+        _id: post._id.toString(),
+        boardId: post.boardId.toString(),
+        userId: post.userId ? post.userId.toString() : null,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString()
+      }));
     }
 
     return cleanObject(board);
@@ -74,8 +118,52 @@ export const getBoardPublic = cache(async (boardId, populate = "") => {
     if (!board) return null;
 
     if (populate && populate.includes("posts")) {
-      const posts = await Post.find({ boardId: board._id }).sort({ votesCounter: -1, createdAt: -1 }).lean();
-      board.posts = posts;
+      const posts = await Post.aggregate([
+        {
+          $match: {
+            boardId: board._id
+          }
+        },
+        {
+          $lookup: {
+            from: "comments",
+            let: { postId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ["$postId", "$$postId"] },
+                  isDeleted: { $ne: true }
+                }
+              }
+            ],
+            as: "comments"
+          }
+        },
+        {
+          $addFields: {
+            commentsCount: { $size: "$comments" }
+          }
+        },
+        {
+          $project: {
+            comments: 0
+          }
+        },
+        {
+          $sort: {
+            votesCounter: -1,
+            createdAt: -1
+          }
+        }
+      ]);
+      board.posts = posts.map(post => ({
+        ...post,
+        _id: post._id.toString(),
+        boardId: post.boardId.toString(),
+        userId: post.userId ? post.userId.toString() : null,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString()
+      }));
     }
 
     return cleanObject(board);
@@ -88,11 +176,55 @@ export const getPosts = async (boardId) => {
   await connectMongo();
 
   try {
-    const posts = await Post.find({ boardId })
-      .sort({ votesCounter: -1, createdAt: -1 })
-      .lean();
+    const posts = await Post.aggregate([
+      {
+        $match: {
+          boardId: mongoose.Types.ObjectId.isValid(boardId) ? new mongoose.Types.ObjectId(boardId) : boardId
+        }
+      },
+      {
+        $lookup: {
+          from: "comments",
+          let: { postId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$postId", "$$postId"] },
+                isDeleted: { $ne: true }
+              }
+            }
+          ],
+          as: "comments"
+        }
+      },
+      {
+        $addFields: {
+          commentsCount: { $size: "$comments" }
+        }
+      },
+      {
+        $project: {
+          comments: 0
+        }
+      },
+      {
+        $sort: {
+          votesCounter: -1,
+          createdAt: -1
+        }
+      }
+    ]);
 
-    return cleanObject(posts);
+    const serializedPosts = posts.map(post => ({
+      ...post,
+      _id: post._id.toString(),
+      boardId: post.boardId.toString(),
+      userId: post.userId ? post.userId.toString() : null,
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString()
+    }));
+
+    return cleanObject(serializedPosts);
   } catch (e) {
     return [];
   }
