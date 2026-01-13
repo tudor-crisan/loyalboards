@@ -3,13 +3,17 @@
 import { useMemo, useEffect, useCallback, useRef } from "react";
 import Input from "@/components/input/Input";
 import InputCheckbox from "@/components/input/InputCheckbox";
+import InputToggle from "@/components/input/InputToggle";
 import Textarea from "@/components/textarea/Textarea";
 import Label from "@/components/common/Label";
 import Title from "@/components/common/Title";
 import Button from "@/components/button/Button";
 import EmptyState from "@/components/common/EmptyState";
 import SvgPost from "@/components/svg/SvgPost";
-import { defaultSetting, defaultStyling } from "@/libs/defaults";
+import BoardCommentUI from "./BoardCommentUI";
+import SvgComment from "@/components/svg/SvgComment";
+import SvgVote from "@/components/svg/SvgVote";
+import { defaultSetting, defaultStyling, appStyling } from "@/libs/defaults";
 import { useStyling, ContextStyling } from "@/context/ContextStyling";
 import Accordion from "@/components/common/Accordion";
 import TextSmall from "@/components/common/TextSmall";
@@ -143,28 +147,6 @@ export default function BoardExtraSettings({ settings, onChange, disabled }) {
 
 
   const accordionItems = [
-    {
-      title: "Appearance",
-      content: (
-        <SettingsContainer>
-          <SettingsAppearance
-            styling={getVal("appearance", defaultStyling)}
-            onChange={(newStyling) => handleChange("appearance", newStyling)}
-            isLoading={disabled}
-          />
-
-          <div className="pt-4 border-t border-base-200">
-            <div className="font-bold text-sm mb-4">Randomizer</div>
-            <SettingsRandomizer
-              config={getVal("randomizer", { theme: true, font: true, styling: true, auto: false })}
-              onConfigChange={(key, val) => handleChange(`randomizer.${key}`, val)}
-              onShuffle={handleShuffle}
-              isLoading={disabled}
-            />
-          </div>
-        </SettingsContainer>
-      )
-    },
     {
       title: "General Form Settings",
       content: (
@@ -340,6 +322,161 @@ export default function BoardExtraSettings({ settings, onChange, disabled }) {
           </SettingsItem>
         </SettingsContainer>
       )
+    },
+    {
+      title: "Comment Section",
+      content: (
+        <SettingsContainer>
+          <SettingsRow>
+            <InputCheckbox
+              label="Show Date"
+              value={getVal("comments.showDate", true)}
+              onChange={(checked) => handleChange("comments.showDate", checked)}
+              disabled={disabled}
+            />
+            <InputCheckbox
+              label="Allow Deletion"
+              value={getVal("comments.allowDeletion", true)}
+              onChange={(checked) => handleChange("comments.allowDeletion", checked)}
+              disabled={disabled}
+            />
+          </SettingsRow>
+
+          <SettingsItem>
+            <Label>Owner Badge Text</Label>
+            <Input
+              value={getVal("comments.ownerBadgeText", "Owner")}
+              onChange={(e) => handleChange("comments.ownerBadgeText", e.target.value)}
+              placeholder="Owner"
+              disabled={disabled}
+              maxLength={20}
+              showCharacterCount={true}
+            />
+          </SettingsItem>
+
+          <SettingsItem>
+            <Label>Empty State Text</Label>
+            <Input
+              value={getVal("comments.emptyStateText", "Be the first to comment")}
+              onChange={(e) => handleChange("comments.emptyStateText", e.target.value)}
+              placeholder="Be the first to comment"
+              disabled={disabled}
+              maxLength={50}
+              showCharacterCount={true}
+            />
+          </SettingsItem>
+
+          <SettingsItem>
+            <Label>Input Label</Label>
+            <Input
+              value={getVal("comments.label", "Your comment")}
+              onChange={(e) => handleChange("comments.label", e.target.value)}
+              placeholder="Your comment"
+              disabled={disabled}
+              maxLength={50}
+              showCharacterCount={true}
+            />
+          </SettingsItem>
+
+          <SettingsItem>
+            <Label>Placeholder</Label>
+            <Input
+              value={getVal("comments.placeholder", "What do you think?")}
+              onChange={(e) => handleChange("comments.placeholder", e.target.value)}
+              placeholder="What do you think?"
+              disabled={disabled}
+              maxLength={100}
+              showCharacterCount={true}
+            />
+          </SettingsItem>
+
+          <SettingsRow>
+            <SettingsItem>
+              <Label>Max Length</Label>
+              <Input
+                type="number"
+                value={getVal("comments.maxLength", 1000)}
+                onChange={(e) => {
+                  let val = parseInt(e.target.value) || 0;
+                  if (val > 2000) val = 2000;
+                  handleChange("comments.maxLength", val);
+                }}
+                min={100}
+                max={2000}
+                disabled={disabled}
+              />
+              <TextSmall className="mt-1">Min: 100, Max: 2000</TextSmall>
+            </SettingsItem>
+            <SettingsItem>
+              <Label>Rows</Label>
+              <Input
+                type="number"
+                value={getVal("comments.rows", 3)}
+                onChange={(e) => {
+                  let val = parseInt(e.target.value) || 0;
+                  if (val > 10) val = 10;
+                  handleChange("comments.rows", val);
+                }}
+                min={2}
+                max={10}
+                disabled={disabled}
+              />
+              <TextSmall className="mt-1">Min: 2, Max: 10</TextSmall>
+            </SettingsItem>
+          </SettingsRow>
+
+          <SettingsItem>
+            <Label>Button Text</Label>
+            <Input
+              value={getVal("comments.buttonText", "Post Comment")}
+              onChange={(e) => handleChange("comments.buttonText", e.target.value)}
+              placeholder="Post Comment"
+              disabled={disabled}
+              maxLength={30}
+              showCharacterCount={true}
+            />
+          </SettingsItem>
+        </SettingsContainer>
+      )
+    },
+    {
+      title: "Appearance",
+      content: (
+        <SettingsContainer>
+          <SettingsAppearance
+            styling={getVal("appearance", defaultStyling)}
+            onChange={(newStyling) => handleChange("appearance", newStyling)}
+            isLoading={disabled}
+          />
+
+          <div className="flex justify-end gap-3 mt-2">
+            <button
+              type="button"
+              onClick={() => handleChange("appearance", appStyling)}
+              className="text-xs text-base-content/50 hover:text-base-content transition-colors underline"
+            >
+              Reset to default
+            </button>
+            <button
+              type="button"
+              onClick={() => handleChange("appearance", styling)}
+              className="text-xs text-base-content/50 hover:text-base-content transition-colors underline"
+            >
+              Use profile settings
+            </button>
+          </div>
+
+          <div className="pt-4 border-t border-base-200">
+            <div className="font-bold text-sm mb-4">Randomizer</div>
+            <SettingsRandomizer
+              config={getVal("randomizer", { theme: true, font: true, styling: true, auto: false })}
+              onConfigChange={(key, val) => handleChange(`randomizer.${key}`, val)}
+              onShuffle={handleShuffle}
+              isLoading={disabled}
+            />
+          </div>
+        </SettingsContainer>
+      )
     }
   ];
 
@@ -400,6 +537,74 @@ export default function BoardExtraSettings({ settings, onChange, disabled }) {
                   description={getVal("emptyState.description", defaultSetting.defaultExtraSettings.emptyState.description)}
                   icon={<SvgPost size="size-16" />}
                 />
+
+                {/* Comment Section Preview */}
+                <div className={`${previewStyling.components.card} ${previewStyling.general.box} p-6 border border-base-200 shadow-sm transition-all duration-300 bg-base-100 text-base-content`}>
+
+                  {/* Mock Post Item for Context */}
+                  <div className="flex gap-4 mb-6">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg mb-1 line-clamp-1">This is a preview post</h3>
+                      <p className="opacity-80 line-clamp-2">Here goes the description of what a potential user might write</p>
+                    </div>
+                    <div className="flex gap-2 text-sm font-medium">
+                      <Button
+                        className="btn-ghost btn-sm opacity-70 hover:opacity-100 gap-1.5 px-2"
+                      >
+                        <SvgComment size="size-5" />
+                        <span className="text-xs font-normal">1</span>
+                      </Button>
+                      <Button
+                        className="btn-ghost btn-sm gap-1.5 px-2"
+                        startIcon={<SvgVote />}
+                      >
+                        <span className="text-sm font-medium">1</span>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <BoardCommentUI
+                    // Mock Comments only if NOT showing empty state
+                    comments={getVal("comments.showEmptyStatePreview", false) ? [] : [
+                      {
+                        _id: "preview-1",
+                        userId: { name: "Admin", _id: "admin-id" },
+                        boardId: { userId: "admin-id" },
+                        text: "Hello, I've left this test comment",
+                        createdAt: new Date(),
+                      }
+                    ]}
+                    user={{ isLoggedIn: true, id: "admin-id" }}
+                    settings={{
+                      showDate: getVal("comments.showDate", true),
+                      allowDeletion: getVal("comments.allowDeletion", true),
+                      ownerBadgeText: getVal("comments.ownerBadgeText", "Owner"),
+                      emptyStateText: getVal("comments.emptyStateText", "Be the first to comment"),
+                      label: getVal("comments.label", "Your comment"),
+                      placeholder: getVal("comments.placeholder", "What do you think?"),
+                      maxLength: getVal("comments.maxLength", 1000),
+                      rows: getVal("comments.rows", 3),
+                      buttonText: getVal("comments.buttonText", "Post Comment"),
+                      showCharacterCount: true
+                    }}
+                    localCommentIds={["preview-1"]}
+                    styling={previewStyling}
+                    onTextChange={() => { }}
+                    onNameChange={() => { }}
+                    onSubmit={(e) => e.preventDefault()}
+                    onDelete={() => { }}
+                  />
+
+                  {/* Toggle for Previewing Empty State */}
+                  <div className="mt-4 pt-4 border-t border-base-200 flex justify-end">
+                    <InputToggle
+                      label="Preview Empty State"
+                      value={getVal("comments.showEmptyStatePreview", false)}
+                      onChange={(checked) => handleChange("comments.showEmptyStatePreview", checked)}
+                    />
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>

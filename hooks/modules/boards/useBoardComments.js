@@ -67,9 +67,9 @@ const useBoardComments = (postId) => {
             // Optimistic update - safely check for duplicates
             setComments(prev => {
               if (prev.some(c => c._id === data.comment._id)) return prev;
-              return [...prev, data.comment];
+              return [data.comment, ...prev];
             });
-            if (onSuccess) onSuccess();
+            if (onSuccess) onSuccess(data.comment);
           }
         },
         showToast: false // Suppress API toast, rely on SSE toast or just UI update
