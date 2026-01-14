@@ -39,7 +39,7 @@
     "hasThemeEmails": true
   },
   "rateLimits": {
-    "auth-magic-link": {
+    "auth-quick-link": {
       "limit": 5,
       "window": 300
     },
@@ -53,6 +53,10 @@
     },
     "billing-create-portal": {
       "limit": 10,
+      "window": 60
+    },
+    "resend-test-email": {
+      "limit": 5,
       "window": 60
     }
   },
@@ -106,7 +110,8 @@
     },
     "api": {
       "billingCreateCheckout": "/api/billing/create-checkout",
-      "billingCreatePortal": "/api/billing/create-portal"
+      "billingCreatePortal": "/api/billing/create-portal",
+      "resendTestEmail": "/api/resend/test-email"
     }
   },
   "integrations": {

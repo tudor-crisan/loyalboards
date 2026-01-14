@@ -1,59 +1,53 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { clientApi } from '@/libs/api';
+import { defaultSetting as settings } from "@/libs/defaults";
 import DashboardWrapper from "@/components/dashboard/DashboardWrapper";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardMain from "@/components/dashboard/DashboardMain";
 import ButtonBack from "@/components/button/ButtonBack";
-import SvgSearch from '@/components/svg/SvgSearch';
 import { useStyling } from "@/context/ContextStyling";
 import Title from "@/components/common/Title";
 import Paragraph from "@/components/common/Paragraph";
 import TextSmall from "@/components/common/TextSmall";
-
-const ranges = [
-  { label: "Today", value: "today" },
-  { label: "Yesterday", value: "yesterday" },
-  { label: "Last 7 Days", value: "7d" },
-  { label: "Last 30 Days", value: "30d" },
-  { label: "Last 3 Months", value: "3m" },
-  { label: "This Year", value: "thisYear" },
-  { label: "Last Year", value: "lastYear" },
-];
+import { useAnalyticsRange } from "@/hooks/modules/boards/useAnalyticsRange";
+import IconLoading from "@/components/icon/IconLoading";
 
 export default function AnalyticsPage() {
   const { styling } = useStyling();
   const [data, setData] = useState(null);
-  const [range, setRange] = useState("30d");
+  const { range, setRange, ranges, startLabel, endLabel } = useAnalyticsRange();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`/api/modules/analytics/global?range=${range}`)
-      .then(res => setData(res.data))
+    clientApi.get(settings.paths.api.analyticsGlobal, { params: { range } })
+      .then(res => setData(res.data.data))
       .catch(err => console.error("Error fetching analytics:", err))
       .finally(() => setIsLoading(false));
   }, [range]);
-
-  const getRangeLabel = () => {
-    switch (range) {
-      case 'today': return ['Today', 'Now'];
-      case 'yesterday': return ['Yesterday', 'End of day'];
-      case '7d': return ['7 days ago', 'Today'];
-      case '30d': return ['30 days ago', 'Today'];
-      case '3m': return ['3 months ago', 'Today'];
-      case 'thisYear': return ['Jan 1', 'Today'];
-      case 'lastYear': return ['Jan 1', 'Dec 31'];
-      default: return ['Start', 'End'];
-    }
-  };
-
-  const [startLabel, endLabel] = getRangeLabel();
 
   // Dynamic Styling from Context
   const cardClass = `${styling.components.card} p-6 h-full`;
   const selectClass = styling.components.select;
   const titleClass = styling.section.title;
+  const roundingClass = styling.components.element.split(' ').find(c => c.startsWith('rounded')) || 'rounded-none';
+  const barRounding = roundingClass.replace('rounded', '!rounded-t');
+
+  const getRadiusValue = (cls) => {
+    const map = {
+      'rounded-none': '0px',
+      'rounded-sm': '0.125rem',
+      'rounded-md': '0.375rem',
+      'rounded-lg': '0.5rem',
+      'rounded-xl': '0.75rem',
+      'rounded-2xl': '1rem',
+      'rounded-3xl': '1.5rem',
+      'rounded-full': '9999px'
+    };
+    return map[cls] || '0.25rem';
+  };
+  const tooltipRadius = getRadiusValue(roundingClass);
 
   return (
     <DashboardWrapper>
@@ -80,7 +74,9 @@ export default function AnalyticsPage() {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center py-20"><span className="loading loading-spinner loading-lg"></span></div>
+            <Paragraph className={`${styling.flex.start} gap-2`}>
+              <IconLoading /> Loading analytics...
+            </Paragraph>
           ) : (
             <>
               {/* Timeline Visualization */}
@@ -89,16 +85,20 @@ export default function AnalyticsPage() {
 
                 {data?.timeline && data.timeline.length > 0 ? (
                   <div className="w-full">
-                    <div className="flex items-end space-x-1 h-64 pt-4 w-full">
+                    <div className="flex items-end justify-center space-x-1 h-64 pt-4 w-full">
                       {data.timeline.map((day, i) => {
                         const total = (day.views || 0) + (day.posts || 0) + (day.votes || 0) + (day.comments || 0);
-                        const maxVal = Math.max(...data.timeline.map(t => (t.views || 0) + (t.posts || 0) + (t.votes || 0) + (t.comments || 0))) || 1;
-                        const height = Math.max((total / maxVal) * 100, 2);
+                        const maxVal = Math.max(1, ...data.timeline.map(t => (t.views || 0) + (t.posts || 0) + (t.votes || 0) + (t.comments || 0)));
+                        const height = (total / maxVal) * 100;
 
                         return (
-                          <div key={i} className="flex-1 flex flex-col justify-end group relative">
-                            <div className="tooltip tooltip-primary w-full h-full flex items-end" data-tip={`${new Date(day._id).toLocaleDateString()}: ${total} events`}>
-                              <div className="bg-primary opacity-70 hover:opacity-100 transition-all rounded-t w-full" style={{ height: `${height}%` }}></div>
+                          <div key={i} className="flex-1 max-w-[40px] h-full flex flex-col justify-end group relative">
+                            <div
+                              className="tooltip tooltip-primary w-full h-full flex items-end"
+                              data-tip={`${new Date(day._id).toLocaleDateString()}: ${total} events`}
+                              style={{ '--tooltip-radius': tooltipRadius }}
+                            >
+                              <div className={`bg-primary opacity-70 hover:opacity-100 transition-all ${barRounding} w-full`} style={{ height: `${Math.max(height, 2)}%` }}></div>
                             </div>
                           </div>
                         );
@@ -111,7 +111,6 @@ export default function AnalyticsPage() {
                   </div>
                 ) : (
                   <div className="py-12 flex flex-col items-center text-center opacity-60">
-                    <SvgSearch className="w-12 h-12 mb-2" />
                     <Paragraph>No activity found for this period</Paragraph>
                   </div>
                 )}

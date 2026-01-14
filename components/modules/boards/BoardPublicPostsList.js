@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { clientApi } from "@/libs/api";
 import { defaultSetting as settings } from "@/libs/defaults";
 import EmptyState from "@/components/common/EmptyState";
 import SvgPost from "@/components/svg/SvgPost";
@@ -12,34 +12,13 @@ import BoardPostItem from "@/components/modules/boards/BoardPostItem";
 import { AnimatePresence } from "framer-motion";
 import BoardButtonVote from "@/components/modules/boards/BoardUpvoteButton";
 import useBoardPosts from "@/hooks/modules/boards/useBoardPosts";
+import useBoardFiltering from "@/hooks/modules/boards/useBoardFiltering";
 
 const BoardPublicPostsList = ({ posts, boardId, emptyStateConfig = {}, commentSettings, search = "", sort = "votes_desc" }) => {
   const { posts: postsState, handleVote, isBoardDeleted } = useBoardPosts(boardId, posts, { showVoteToast: true });
   const router = useRouter();
 
-  const filteredPosts = [...(postsState || [])]
-    .filter(post => {
-      if (!search) return true;
-      const term = search.toLowerCase();
-      return (
-        post.title?.toLowerCase().includes(term) ||
-        post.description?.toLowerCase().includes(term)
-      );
-    })
-    .sort((a, b) => {
-      switch (sort) {
-        case "votes_desc":
-          return (b.votesCounter || 0) - (a.votesCounter || 0);
-        case "date_desc":
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        case "date_asc":
-          return new Date(a.createdAt) - new Date(b.createdAt);
-        case "comments_desc":
-          return (b.commentsCount || 0) - (a.commentsCount || 0);
-        default:
-          return 0;
-      }
-    });
+  const { filteredPosts } = useBoardFiltering(postsState, { search, sort });
 
   useEffect(() => {
     if (isBoardDeleted) {
@@ -56,7 +35,7 @@ const BoardPublicPostsList = ({ posts, boardId, emptyStateConfig = {}, commentSe
   useEffect(() => {
     // Track visit
     if (boardId) {
-      axios.post('/api/modules/analytics/visit', { boardId })
+      clientApi.post(settings.paths.api.analyticsVisit, { boardId })
         .catch(err => console.error(err));
     }
   }, [boardId]);
