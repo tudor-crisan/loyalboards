@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import clsx from 'clsx';
 import { useStyling } from "@/context/ContextStyling";
 import { formatCommentDate } from "@/libs/utils.client";
@@ -10,20 +10,34 @@ import useApiRequest from '@/hooks/useApiRequest';
 import { clientApi } from '@/libs/api';
 import { setDataError, setDataSuccess } from "@/libs/api";
 import Button from '@/components/button/Button';
-import Paragraph from '@/components/common/Paragraph';
 
 export default function BoardDashboardNotifications() {
   const { styling } = useStyling();
   const [notifications, setNotifications] = useState([]);
-  const { request: fetchReq } = useApiRequest();
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+  const { request: fetchReq, loading: isFetching } = useApiRequest();
   // Removed actionReq to allow concurrent requests
   const [loadingIds, setLoadingIds] = useState([]);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
-  const prevLoadingIdsRef = React.useRef(loadingIds);
+  const prevLoadingIdsRef = useRef(loadingIds);
+  const scrollContainerRef = useRef(null);
 
-  const fetchNotifications = React.useCallback(() => {
-    fetchReq(() => clientApi.get(settings.paths.api.boardsNotifications), {
-      onSuccess: (msg, data) => setNotifications(data.notifications || []),
+  const fetchNotifications = React.useCallback((pageNumber = 1) => {
+    fetchReq(() => clientApi.get(`${settings.paths.api.boardsNotifications}?page=${pageNumber}&limit=20`), {
+      onSuccess: (msg, data) => {
+        setNotifications(prev => {
+          if (pageNumber === 1) return data.notifications || [];
+          const newNotifications = data.notifications || [];
+          const existingIds = new Set(prev.map(n => n._id));
+          const filteredNew = newNotifications.filter(n => !existingIds.has(n._id));
+          return [...prev, ...filteredNew];
+        });
+        setHasMore(data.hasMore);
+        setPage(pageNumber);
+        if (pageNumber === 1) setLoadingInitial(false);
+      },
       showToast: false
     });
   }, [fetchReq]);
@@ -31,6 +45,59 @@ export default function BoardDashboardNotifications() {
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
+
+  // Realtime Updates via SSE
+  useEffect(() => {
+    const eventSource = new EventSource(settings.paths.api.notificationsStream);
+
+    eventSource.onopen = () => {
+      console.log("SSE connection established");
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        // Handle keep-alive
+        if (event.data === ": keep-alive") return;
+
+        const data = JSON.parse(event.data);
+        console.log("SSE message received:", data.type);
+
+        if (data.type === "notification-create") {
+          setNotifications(prev => {
+            // Avoid duplicates
+            if (prev.some(n => n._id === data.notification._id)) return prev;
+            return [data.notification, ...prev];
+          });
+          // Trigger analytics refresh
+          window.dispatchEvent(new CustomEvent('analytics-refresh'));
+        }
+
+        if (data.type === "notification-update") {
+          setNotifications(prev => prev.map(n => {
+            if (n._id === data.notificationId && data.updatedFields) {
+              return { ...n, ...data.updatedFields };
+            }
+            return n;
+          }));
+          // Trigger analytics refresh
+          window.dispatchEvent(new CustomEvent('analytics-refresh'));
+        }
+
+      } catch (error) {
+        console.error("SSE parse error", error);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      // Vercel serverless functions will close the connection.
+      // The browser's EventSource will automatically attempt to reconnect.
+      console.log("SSE connection interrupted, waiting for auto-reconnect...");
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []); // Empty dependency array to run once on mount
 
   // Debounced fetch: Only fetch when all concurrent requests are finished
   useEffect(() => {
@@ -79,7 +146,15 @@ export default function BoardDashboardNotifications() {
     }
   };
 
-  if (notifications.length === 0) return null;
+  const handleScroll = (e) => {
+    if (isFetching || !hasMore) return;
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 30) {
+      fetchNotifications(page + 1);
+    }
+  };
+
+  if (loadingInitial && notifications.length === 0) return null;
 
   return (
     <div className={`${styling.components.card} ${styling.general.box} space-y-3`}>
@@ -96,40 +171,76 @@ export default function BoardDashboardNotifications() {
           </Button>
         )}
       </div>
-      <div className="max-h-60 overflow-y-auto space-y-2">
+      <div
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="max-h-60 overflow-y-auto space-y-2"
+      >
         {notifications.map(notification => (
-          <div key={notification._id} className={clsx(`${styling.components.element} ${styling.flex.between} alert opacity-70`, (!notification.isRead || loadingIds.includes(notification._id)) && "border-primary alert-outline opacity-100")}>
-            <div className="flex-1 space-y-1 pt-1 min-w-0">
-              <TextSmall>
-                {formatCommentDate(notification.createdAt)}
-              </TextSmall>
-              <Paragraph className="truncate overflow-hidden">
-                <span className="badge badge-xs badge-primary font-bold mr-2">{notification.type}</span>
-                <span className="font-bold mr-2">[{notification.boardId?.name || 'Board'}  ]</span>
-                <span className="opacity-80">
-                  {
-                    notification.type === 'POST' ? notification.data?.postTitle :
-                      notification.type === 'COMMENT' ? notification.data?.commentText :
-                        notification.data?.postTitle
-                  }
-                </span>
-              </Paragraph>
-            </div>
-            {(!notification.isRead || loadingIds.includes(notification._id)) && (
-              <Button
-                onClick={() => markAsRead([notification._id])}
-                variant="btn-outline"
-                size="btn-xs"
-                className="shrink-0 ml-2"
-                isLoading={loadingIds.includes(notification._id)}
-                disabled={notification.isRead} // Disable if already optimistically read
-              >
-                Mark Read
-              </Button>
-            )}
-          </div>
+          <NotificationItem
+            key={notification._id}
+            notification={notification}
+            loadingIds={loadingIds}
+            markAsRead={markAsRead}
+            styling={styling}
+          />
         ))}
+        {isFetching && hasMore && (
+          <div className="flex justify-center p-2">
+            <span className="loading loading-spinner loading-xs text-primary"></span>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+const NotificationItem = ({ notification, loadingIds, markAsRead, styling }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const content = notification.type === 'POST' ? notification.data?.postTitle :
+    notification.type === 'COMMENT' ? notification.data?.commentText :
+      notification.data?.postTitle;
+
+  const isContentLong = content && content.length > 70; // Threshold for truncation
+
+  return (
+    <div className={clsx(`${styling.components.element} ${styling.flex.between} alert opacity-70 items-start`, (!notification.isRead || loadingIds.includes(notification._id)) && "border-primary alert-outline opacity-100")}>
+      <div className="flex-1 space-y-1 pt-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <TextSmall>
+            {formatCommentDate(notification.createdAt)}
+          </TextSmall>
+          <span className="badge badge-xs badge-primary font-bold">{notification.type}</span>
+        </div>
+
+        <div className="text-sm">
+          <span className="font-bold mr-2">[{notification.boardId?.name || 'Board'}]</span>
+          <span className={clsx("opacity-80 break-words", !isExpanded && "line-clamp-1 inline")}>
+            {content}
+          </span>
+        </div>
+
+        {isContentLong && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs text-primary hover:underline mt-1 block"
+          >
+            {isExpanded ? "View Less" : "View More"}
+          </button>
+        )}
+      </div>
+      {(!notification.isRead || loadingIds.includes(notification._id)) && (
+        <Button
+          onClick={() => markAsRead([notification._id])}
+          variant="btn-outline"
+          size="btn-xs"
+          className="shrink-0 ml-2 mt-1"
+          isLoading={loadingIds.includes(notification._id)}
+          disabled={notification.isRead}
+        >
+          Mark Read
+        </Button>
+      )}
     </div>
   );
 }

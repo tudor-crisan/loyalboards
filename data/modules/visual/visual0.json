@@ -34,8 +34,8 @@
     }
   },
   "favicon": {
-    "type": "image/svg+xml",
-    "sizes": "32x32",
+    "type": "image/png",
+    "sizes": "16x16",
     "href": ""
   },
   "homepage": {
