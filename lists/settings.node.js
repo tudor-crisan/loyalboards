@@ -23,7 +23,7 @@ const loadJSON = (p) => {
 const settings = {
   lb0_setting: loadJSON("../data/apps/loyalboards/lb0_setting.json"),
   setting0: loadJSON("../data/modules/setting/setting0.json"),
-  boards: loadJSON("../data/modules/boards/boards.json"),
+  boards: loadJSON("../data/modules/boards/boards.json")
 };
 
 export default settings;
