@@ -14,9 +14,10 @@ export const getMetadata = (target = "", variables = {}) => {
   }
 
   if (settings?.seo) {
-    variables.seoTitle = settings.seo.title;
-    variables.seoDescription = settings.seo.description;
-    variables.seoTagline = settings.seo.tagline;
+    variables.seoTitle = variables.seoTitle || settings.seo.title;
+    variables.seoDescription = variables.seoDescription || settings.seo.description;
+    variables.seoTagline = variables.seoTagline || settings.seo.tagline;
+    variables.seoImage = variables.seoImage || settings.seo.image;
   }
 
   if (!metadata) {
@@ -34,6 +35,44 @@ export const getMetadata = (target = "", variables = {}) => {
   return {
     title,
     description,
+    openGraph: {
+      title,
+      description,
+      type: variables.ogType || "website",
+      url: `https://${settings.website}${variables.canonicalUrlRelative || ""}`,
+      images: [
+        {
+          url: variables.seoImage || settings.seo?.image || "",
+        },
+      ],
+      ...(variables.ogType === "article" && {
+        article: {
+          publishedTime: variables.publishedTime,
+          authors: [variables.author || settings.appName],
+          tags: variables.tags || [],
+        },
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [variables.seoImage || settings.seo?.image || ""],
+    },
+    alternates: {
+      canonical: variables.canonicalUrlRelative,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 };
 

@@ -20,6 +20,12 @@
     "card_featured_interactive": "cursor-pointer hover:border-primary hover:bg-base-200/50",
     "card_simple_interactive": "cursor-pointer"
   },
+  "blog": {
+    "card": "rounded-2xl shadow-md border border-primary bg-base-100 overflow-hidden",
+    "image": "aspect-video object-center object-contain bg-white p-4 hover:scale-[1.03] duration-200 ease-in-out",
+    "badge": "bg-primary text-primary-content text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider hover:opacity-80 duration-200 ease-in-out",
+    "disclaimer": "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-base-200/50 border border-base-300 text-xs font-medium opacity-70"
+  },
   "flex": {
     "center": "flex items-center justify-center",
     "items_center": "flex items-center",
@@ -58,6 +64,9 @@
     "padding": "py-32!"
   },
   "SectionFAQ": {
+    "padding": "py-32!"
+  },
+  "SectionBlog": {
     "padding": "py-32!"
   },
   "SectionFooter": {

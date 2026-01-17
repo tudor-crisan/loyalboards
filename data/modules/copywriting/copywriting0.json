@@ -3,11 +3,15 @@
     "menus": [
       {
         "label": "Pricing",
-        "path": "#pricing"
+        "path": "/#pricing"
       },
       {
         "label": "FAQ",
-        "path": "#faq"
+        "path": "/#faq"
+      },
+      {
+        "label": "Blog",
+        "path": "/blog"
       }
     ]
   },
@@ -30,6 +34,13 @@
     },
     "button": {
       "label": "Payment"
+    }
+  },
+  "SectionBlog": {
+    "headline": "Latest from our blog",
+    "paragraph": "Stay updated with the latest news, tips, and insights from our team.",
+    "button": {
+      "label": "Read all blog articles"
     }
   },
   "SectionFooter": {

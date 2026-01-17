@@ -1,0 +1,31 @@
+{
+  "title": "",
+  "description": "",
+  "image": "",
+  "categories": [
+    {
+      "slug": "example",
+      "title": "Example title",
+      "titleShort": "Example title",
+      "description": "Learn how to etc.",
+      "descriptionShort": "Learn how to etc."
+    }
+  ],
+  "articles": [
+    {
+      "slug": "example-article",
+      "title": "Introducing Article",
+      "description": "Article description etc",
+      "categorySlugs": [
+        "example"
+      ],
+      "publishedAt": "2025-01-17",
+      "image": {
+        "src": "",
+        "urlRelative": "",
+        "alt": ""
+      },
+      "content": "<p>Random test content</p>"
+    }
+  ]
+}

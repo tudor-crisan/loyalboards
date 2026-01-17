@@ -15,8 +15,10 @@ const apps = {
     "setting": {
       "default": "setting0",
       "override": "lb0_setting"
-    }
+    },
   },
+  },
+  }
 }
 
 export default apps;
