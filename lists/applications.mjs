@@ -1,0 +1,70 @@
+const applications = {
+  "loyalboards": {
+    "copywriting": {
+      "default": "copywriting0",
+      "override": "lb0_copywriting"
+    },
+    "styling": {
+      "default": "styling0",
+      "override": "lb0_styling"
+    },
+    "visual": {
+      "default": "visual0",
+      "override": "lb0_visual"
+    },
+    "setting": {
+      "default": "setting0",
+      "override": "lb0_setting"
+    },
+    "blog": {
+      "default": "blog0",
+      "override": "lb0_blog"
+    }
+  },
+  "taskflow": {
+    "copywriting": {
+      "default": "copywriting0",
+      "override": "tf0_copywriting"
+    },
+    "styling": {
+      "default": "styling0",
+      "override": "tf0_styling"
+    },
+    "visual": {
+      "default": "visual0",
+      "override": "tf0_visual"
+    },
+    "setting": {
+      "default": "setting0",
+      "override": "tf0_setting"
+    },
+    "blog": {
+      "default": "blog0",
+      "override": "tf0_blog"
+    }
+  },
+  "tudorcrisan": {
+    "copywriting": {
+      "default": "copywriting0",
+      "override": "tc0_copywriting"
+    },
+    "styling": {
+      "default": "styling0",
+      "override": "tc0_styling"
+    },
+    "visual": {
+      "default": "visual0",
+      "override": "tc0_visual"
+    },
+    "setting": {
+      "default": "setting0",
+      "override": "tc0_setting"
+    },
+    "blog": {
+      "default": "blog0",
+      "override": "tc0_blog"
+    }
+  }
+};
+
+export default applications;
