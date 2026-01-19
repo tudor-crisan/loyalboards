@@ -1,10 +1,9 @@
-
-import lb0_styling from "../data/apps/loyalboards/lb0_styling.json";
-import styling0 from "../data/modules/styling/styling0.json";
+import styling from "../data/modules/styling.json";
+import loyalboards_styling from "../data/apps/loyalboards/styling.json";
 
 const stylings = {
-  lb0_styling,
-  styling0
-}
+  styling,
+  loyalboards_styling,
+};
 
 export default stylings;

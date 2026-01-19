@@ -1,10 +1,9 @@
-
-import lb0_visual from "../data/apps/loyalboards/lb0_visual.json";
-import visual0 from "../data/modules/visual/visual0.json";
+import visual from "../data/modules/visual.json";
+import loyalboards_visual from "../data/apps/loyalboards/visual.json";
 
 const visuals = {
-  lb0_visual,
-  visual0
-}
+  visual,
+  loyalboards_visual,
+};
 
 export default visuals;

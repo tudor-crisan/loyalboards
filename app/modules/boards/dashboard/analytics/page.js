@@ -10,14 +10,18 @@ import { useStyling } from "@/context/ContextStyling";
 import Title from "@/components/common/Title";
 import Paragraph from "@/components/common/Paragraph";
 import TextSmall from "@/components/common/TextSmall";
-import { useAnalyticsRange } from "@/hooks/modules/boards/useAnalyticsRange";
-import IconLoading from "@/components/icon/IconLoading";
+import { useAnalyticsRange } from "@/hooks/useAnalyticsRange";
+import Select from "@/components/select/Select";
+import { useSort } from "@/hooks/useSort";
+import Loading from '@/components/common/Loading';
 
 export default function AnalyticsPage() {
   const { styling } = useStyling();
   const [data, setData] = useState(null);
   const { range, setRange, ranges, startLabel, endLabel } = useAnalyticsRange();
   const [isLoading, setIsLoading] = useState(true);
+
+  const { sortedItems: sortedBoards, requestSort, getSortIcon } = useSort(data?.boards, { key: 'totalViews', direction: 'desc' });
 
   useEffect(() => {
     const fetchData = (showLoading = true) => {
@@ -48,8 +52,7 @@ export default function AnalyticsPage() {
   }, [range]);
 
   // Dynamic Styling from Context
-  const cardClass = `${styling.components.card} p-6 h-full`;
-  const selectClass = styling.components.select;
+  const cardClass = `${styling.components.card} ${styling.general.box}`;
   const titleClass = styling.section.title;
   const roundingClass = styling.components.element.split(' ').find(c => c.startsWith('rounded')) || 'rounded-none';
   const barRounding = roundingClass.replace('rounded', '!rounded-t');
@@ -72,31 +75,28 @@ export default function AnalyticsPage() {
   return (
     <DashboardWrapper>
       <DashboardHeader>
-        <div className="w-full flex justify-between items-center gap-4">
+        <div className={`w-full ${styling.flex.between} gap-4`}>
           <ButtonBack url="/dashboard" />
 
-          <div className="w-full sm:w-auto">
-            <select
-              className={selectClass}
+          <div className="w-fit">
+            <Select
+              className="pr-10! w-full sm:w-48"
               value={range}
               onChange={(e) => setRange(e.target.value)}
-            >
-              {ranges.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
-            </select>
+              options={ranges}
+            />
           </div>
         </div>
       </DashboardHeader>
 
       <DashboardMain>
         <div className="space-y-6 w-full">
-          <div className="flex flex-col gap-2">
+          <div className={`${styling.flex.col} gap-2`}>
             <Title className={titleClass}>Analytics</Title>
           </div>
 
           {isLoading ? (
-            <Paragraph className={`${styling.flex.start} gap-2`}>
-              <IconLoading /> Loading analytics...
-            </Paragraph>
+            <Loading text="Loading analytics ..." className="mt-2" />
           ) : (
             <>
               {/* Timeline Visualization */}
@@ -112,7 +112,7 @@ export default function AnalyticsPage() {
                         const height = (total / maxVal) * 100;
 
                         return (
-                          <div key={i} className="flex-1 max-w-[40px] h-full flex flex-col justify-end group relative">
+                          <div key={i} className={`flex-1 max-w-[40px] h-full ${styling.flex.col} justify-end group relative`}>
                             <div
                               className="tooltip tooltip-primary w-full h-full flex items-end"
                               data-tip={`${new Date(day._id).toLocaleDateString()}: ${total} events`}
@@ -130,7 +130,7 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="py-12 flex flex-col items-center text-center opacity-60">
+                  <div className={`py-12 ${styling.flex.col} items-center text-center opacity-60`}>
                     <Paragraph>No activity found for this period</Paragraph>
                   </div>
                 )}
@@ -143,15 +143,40 @@ export default function AnalyticsPage() {
                   <table className="table">
                     <thead>
                       <tr>
-                        <th><TextSmall className="font-bold">Board Name</TextSmall></th>
-                        <th><TextSmall className="font-bold">Views</TextSmall></th>
-                        <th><TextSmall className="font-bold">Posts</TextSmall></th>
-                        <th><TextSmall className="font-bold">Votes</TextSmall></th>
-                        <th><TextSmall className="font-bold">Comments</TextSmall></th>
+                        <th className="cursor-pointer hover:bg-base-200 transition-colors" onClick={() => requestSort('name')}>
+                          <div className={`${styling.flex.items_center} gap-2`}>
+                            <TextSmall className="font-bold">Board Name</TextSmall>
+                            {getSortIcon('name')}
+                          </div>
+                        </th>
+                        <th className="cursor-pointer hover:bg-base-200 transition-colors" onClick={() => requestSort('totalViews')}>
+                          <div className={`${styling.flex.items_center} gap-2`}>
+                            <TextSmall className="font-bold">Views</TextSmall>
+                            {getSortIcon('totalViews')}
+                          </div>
+                        </th>
+                        <th className="cursor-pointer hover:bg-base-200 transition-colors" onClick={() => requestSort('totalPosts')}>
+                          <div className={`${styling.flex.items_center} gap-2`}>
+                            <TextSmall className="font-bold">Posts</TextSmall>
+                            {getSortIcon('totalPosts')}
+                          </div>
+                        </th>
+                        <th className="cursor-pointer hover:bg-base-200 transition-colors" onClick={() => requestSort('totalVotes')}>
+                          <div className={`${styling.flex.items_center} gap-2`}>
+                            <TextSmall className="font-bold">Votes</TextSmall>
+                            {getSortIcon('totalVotes')}
+                          </div>
+                        </th>
+                        <th className="cursor-pointer hover:bg-base-200 transition-colors" onClick={() => requestSort('totalComments')}>
+                          <div className={`${styling.flex.items_center} gap-2`}>
+                            <TextSmall className="font-bold">Comments</TextSmall>
+                            {getSortIcon('totalComments')}
+                          </div>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {data?.boards && data.boards.length > 0 ? data.boards.map(board => (
+                      {sortedBoards.length > 0 ? sortedBoards.map(board => (
                         <tr key={board._id}>
                           <td className="font-bold">{board.name}</td>
                           <td>{board.totalViews || 0}</td>

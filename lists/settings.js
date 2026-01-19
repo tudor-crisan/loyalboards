@@ -1,12 +1,9 @@
-
-import lb0_setting from "../data/apps/loyalboards/lb0_setting.json";
-import setting0 from "../data/modules/setting/setting0.json";
-import boards from "../data/modules/boards/boards.json";
+import setting from "../data/modules/setting.json";
+import loyalboards_setting from "../data/apps/loyalboards/setting.json";
 
 const settings = {
-  lb0_setting,
-  setting0,
-  boards,
-}
+  setting,
+  loyalboards_setting,
+};
 
 export default settings;
