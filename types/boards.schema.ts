@@ -1,5 +1,5 @@
+import { FormSchema, PagePathSchema } from "@/types/setting.schema";
 import { z } from "zod";
-import { FormSchema, PagePathSchema } from "./setting.schema";
 
 /**
  * Zod Schema for Board Path Configuration.
@@ -43,7 +43,7 @@ export const DefaultExtraSettingsSchema = z.object({
         maxlength: z.number().optional(),
         showCharacterCount: z.boolean().optional(),
         rows: z.number().optional(),
-      })
+      }),
     ),
   }),
   emptyState: z.object({

@@ -1,10 +1,10 @@
 "use client";
-import { useState, useCallback } from "react";
-import Cropper from "react-easy-crop";
 import Button from "@/components/button/Button";
+import InputRange from "@/components/input/InputRange";
 import { useStyling } from "@/context/ContextStyling";
 import { getCroppedImg } from "@/libs/image";
-import InputRange from "@/components/input/InputRange";
+import { useCallback, useState } from "react";
+import Cropper from "react-easy-crop";
 
 const ImageCropper = ({ imageSrc, onCropComplete, onCancel, aspect = 1 }) => {
   const { styling } = useStyling();
@@ -26,14 +26,21 @@ const ImageCropper = ({ imageSrc, onCropComplete, onCancel, aspect = 1 }) => {
     setRotation(rotation);
   }, []);
 
-  const onCropCompleteCallback = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  const onCropCompleteCallback = useCallback(
+    (croppedArea, croppedAreaPixels) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    [],
+  );
 
   const handleSave = async () => {
     try {
       setIsLoading(true);
-      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
+      const croppedImage = await getCroppedImg(
+        imageSrc,
+        croppedAreaPixels,
+        rotation,
+      );
       onCropComplete(croppedImage);
     } catch (e) {
       console.error(e);
@@ -97,11 +104,7 @@ const ImageCropper = ({ imageSrc, onCropComplete, onCancel, aspect = 1 }) => {
           >
             Cancel
           </Button>
-          <Button
-            type="button"
-            onClick={handleSave}
-            isLoading={isLoading}
-          >
+          <Button type="button" onClick={handleSave} isLoading={isLoading}>
             Crop & Upload
           </Button>
         </div>

@@ -1,19 +1,25 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Button from "@/components/button/Button";
-import Modal from "@/components/common/Modal";
-import Input from "@/components/input/Input";
 import Label from "@/components/common/Label";
+import Modal from "@/components/common/Modal";
+import TextSmall from "@/components/common/TextSmall";
+import Input from "@/components/input/Input";
+import BoardExtraSettings from "@/components/modules/boards/ui/ExtraSettings";
+import { useStyling } from "@/context/ContextStyling";
 import useApiRequest from "@/hooks/useApiRequest";
 import { clientApi } from "@/libs/api";
 import { defaultSetting as settings } from "@/libs/defaults";
-import TextSmall from "@/components/common/TextSmall";
 import { createSlug } from "@/libs/utils.client";
-import BoardExtraSettings from "@/components/modules/boards/ui/ExtraSettings";
-import { useStyling } from "@/context/ContextStyling";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function BoardEditModal({ boardId, currentSlug, currentName, extraSettings = {}, className = "" }) {
+export default function BoardEditModal({
+  boardId,
+  currentSlug,
+  currentName,
+  extraSettings = {},
+  className = "",
+}) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [slug, setSlug] = useState(currentSlug || "");
@@ -25,7 +31,7 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, extr
   const hasSettings = extraSettings && Object.keys(extraSettings).length > 0;
 
   const [settingsState, setSettingsState] = useState(
-    hasSettings ? extraSettings : defaultTemplate
+    hasSettings ? extraSettings : defaultTemplate,
   );
 
   const { loading, request } = useApiRequest();
@@ -51,22 +57,26 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, extr
 
   const handleSave = async () => {
     await request(
-      () => clientApi.put(settings.paths.api.boardsDetail, { boardId, slug, name, extraSettings: settingsState }),
+      () =>
+        clientApi.put(settings.paths.api.boardsDetail, {
+          boardId,
+          slug,
+          name,
+          extraSettings: settingsState,
+        }),
       {
         onSuccess: () => {
           setIsModalOpen(false);
           router.refresh();
         },
-        showToast: true
-      }
+        showToast: true,
+      },
     );
   };
 
   return (
     <div className={className}>
-      <Button onClick={handleOpen}>
-        Edit board
-      </Button>
+      <Button onClick={handleOpen}>Edit board</Button>
 
       <Modal
         isModalOpen={isModalOpen}
@@ -82,10 +92,7 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, extr
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleSave}
-              isLoading={loading}
-            >
+            <Button onClick={handleSave} isLoading={loading}>
               Save
             </Button>
           </>
@@ -100,7 +107,9 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, extr
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. My Awesome Board"
               maxLength={settings.forms.Board.inputsConfig.name.maxlength || 50}
-              showCharacterCount={settings.forms.Board.inputsConfig.name.showCharacterCount}
+              showCharacterCount={
+                settings.forms.Board.inputsConfig.name.showCharacterCount
+              }
               disabled={loading}
             />
           </div>
@@ -116,7 +125,8 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, extr
               className="w-full"
             />
             <TextSmall>
-              This will change the public link to your board. You can only change this once per day.
+              This will change the public link to your board. You can only
+              change this once per day.
             </TextSmall>
           </div>
 
@@ -128,7 +138,7 @@ export default function BoardEditModal({ boardId, currentSlug, currentName, extr
             />
           </div>
         </div>
-      </Modal >
-    </div >
+      </Modal>
+    </div>
   );
 }

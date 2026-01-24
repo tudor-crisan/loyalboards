@@ -1,8 +1,13 @@
 "use client";
-import { useStyling } from "@/context/ContextStyling";
 import CharacterCount from "@/components/common/CharacterCount";
+import { useStyling } from "@/context/ContextStyling";
 
-export default function Textarea({ className = "", error, showCharacterCount, ...props }) {
+export default function Textarea({
+  className = "",
+  error,
+  showCharacterCount,
+  ...props
+}) {
   const { styling } = useStyling();
 
   // Helper for error state

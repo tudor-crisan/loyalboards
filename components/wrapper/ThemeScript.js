@@ -1,8 +1,8 @@
-import fonts, { fontMap } from "@/lists/fonts";
+import fonts from "@/lists/fonts";
 
 export default function ThemeScript() {
   const fontClasses = {};
-  Object.keys(fonts).forEach(key => {
+  Object.keys(fonts).forEach((key) => {
     if (fonts[key]?.className) {
       fontClasses[key] = fonts[key].className;
     }
@@ -36,7 +36,5 @@ export default function ThemeScript() {
     })();
   `;
 
-  return (
-    <script dangerouslySetInnerHTML={{ __html: script }} />
-  );
+  return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }

@@ -1,18 +1,25 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useAuth } from "@/context/ContextAuth";
-import { defaultSetting as settings } from "@/libs/defaults";
 import Button from "@/components/button/Button";
+import CommentUI from "@/components/comments/CommentUI";
 import Modal from "@/components/common/Modal";
 import Paragraph from "@/components/common/Paragraph";
-import useBoardComments from "@/hooks/modules/boards/useBoardComments";
+import { useAuth } from "@/context/ContextAuth";
 import { useStyling } from "@/context/ContextStyling";
-import CommentUI from "@/components/comments/CommentUI";
+import useBoardComments from "@/hooks/modules/boards/useBoardComments";
+import { defaultSetting as settings } from "@/libs/defaults";
+import { useEffect, useState } from "react";
 
 const BoardCommentSection = ({ postId, settings: customSettings }) => {
   const { styling } = useStyling();
   const session = useAuth();
-  const { comments, isLoading, isSubmitting, addComment, deleteComment, inputErrors } = useBoardComments(postId);
+  const {
+    comments,
+    isLoading,
+    isSubmitting,
+    addComment,
+    deleteComment,
+    inputErrors,
+  } = useBoardComments(postId);
 
   const [text, setText] = useState("");
   const [name, setName] = useState("");
@@ -21,7 +28,9 @@ const BoardCommentSection = ({ postId, settings: customSettings }) => {
   const [commentToDelete, setCommentToDelete] = useState(null);
 
   useEffect(() => {
-    const savedIds = JSON.parse(localStorage.getItem("board_local_comments") || "[]");
+    const savedIds = JSON.parse(
+      localStorage.getItem("board_local_comments") || "[]",
+    );
     setLocalCommentIds(savedIds);
   }, []);
 
@@ -41,18 +50,24 @@ const BoardCommentSection = ({ postId, settings: customSettings }) => {
       setIsNameSaved(true);
     }
 
-    await addComment({
-      text,
-      name: session.isLoggedIn ? undefined : name
-    }, (newComment) => {
-      setText("");
+    await addComment(
+      {
+        text,
+        name: session.isLoggedIn ? undefined : name,
+      },
+      (newComment) => {
+        setText("");
 
-      if (newComment?._id && !session.isLoggedIn) {
-        const updatedIds = [...localCommentIds, newComment._id];
-        setLocalCommentIds(updatedIds);
-        localStorage.setItem("board_local_comments", JSON.stringify(updatedIds));
-      }
-    });
+        if (newComment?._id && !session.isLoggedIn) {
+          const updatedIds = [...localCommentIds, newComment._id];
+          setLocalCommentIds(updatedIds);
+          localStorage.setItem(
+            "board_local_comments",
+            JSON.stringify(updatedIds),
+          );
+        }
+      },
+    );
   };
 
   const defaultFormConfig = settings.forms.Comment;
@@ -63,8 +78,11 @@ const BoardCommentSection = ({ postId, settings: customSettings }) => {
 
     label: customSettings?.label || defaultFormConfig.inputsConfig.text.label,
     placeholder: customSettings?.placeholder || "What do you think?",
-    buttonText: customSettings?.buttonText || defaultFormConfig.formConfig.button,
-    maxLength: customSettings?.maxLength || defaultFormConfig.inputsConfig.text.maxlength,
+    buttonText:
+      customSettings?.buttonText || defaultFormConfig.formConfig.button,
+    maxLength:
+      customSettings?.maxLength ||
+      defaultFormConfig.inputsConfig.text.maxlength,
     rows: customSettings?.rows, // BoardCommentUI handles default
 
     // Toggles / Texts

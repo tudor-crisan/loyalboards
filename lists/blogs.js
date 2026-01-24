@@ -1,9 +1,9 @@
-import blog from "../data/modules/blog.json";
-import loyalboards_blog from "../data/apps/loyalboards/blog.json";
+import loyalboards_blog from "@/data/apps/loyalboards/blog.json";
+import blog from "@/data/modules/blog.json";
 
 const blogs = {
-  blog,
   loyalboards_blog,
+  blog,
 };
 
 export default blogs;

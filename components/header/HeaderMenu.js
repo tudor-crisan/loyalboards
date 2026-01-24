@@ -1,13 +1,18 @@
-import Link from "next/link";
+"use client";
+import Dropdown from "@/components/common/Dropdown";
 import { useCopywriting } from "@/context/ContextCopywriting";
 import { useStyling } from "@/context/ContextStyling";
+import Link from "next/link";
 
 export default function HeaderMenu() {
   const { copywriting } = useCopywriting();
   const { styling } = useStyling();
 
   // If no menus defined, don't render anything
-  if (!copywriting.SectionHeader.menus || copywriting.SectionHeader.menus.length === 0) {
+  if (
+    !copywriting.SectionHeader.menus ||
+    copywriting.SectionHeader.menus.length === 0
+  ) {
     return null;
   }
 
@@ -24,6 +29,15 @@ export default function HeaderMenu() {
             {menu.label}
           </Link>
         ))}
+
+        {/* Help Dropdown */}
+        <Dropdown
+          label="Help"
+          items={
+            copywriting.SectionFooter.menus.find((m) => m.title === "Support")
+              ?.links || []
+          }
+        />
       </div>
     </>
   );

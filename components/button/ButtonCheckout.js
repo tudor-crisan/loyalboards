@@ -1,20 +1,24 @@
 "use client";
-import { useState } from "react";
-import { clientApi } from "@/libs/api";
 import Button from "@/components/button/Button";
-import useApiRequest from "@/hooks/useApiRequest";
-import SvgPay from "@/components/svg/SvgPay";
-import { defaultSetting as settings } from "@/libs/defaults";
-import { useCopywriting } from "@/context/ContextCopywriting";
+import Divider from "@/components/common/Divider";
 import Modal from "@/components/common/Modal";
 import PricingPlanCard from "@/components/pricing/PricingPlanCard";
-import Divider from "@/components/common/Divider";
+import SvgPay from "@/components/svg/SvgPay";
+import { useCopywriting } from "@/context/ContextCopywriting";
 import { useStyling } from "@/context/ContextStyling";
+import useApiRequest from "@/hooks/useApiRequest";
+import { clientApi } from "@/libs/api";
+import { defaultSetting as settings } from "@/libs/defaults";
+import { useState } from "react";
 
 const SUCCESS_URL_REDIRECT = settings.paths.billingSuccess.source;
 const CANCEL_URL_REDIRECT = settings.paths.dashboard.source;
 
-const ButtonCheckout = ({ className = "", variant = "btn-primary", children = "Subscribe", ...props }) => {
+const ButtonCheckout = ({
+  className = "",
+  variant = "btn-primary",
+  ...props
+}) => {
   const { styling } = useStyling();
   const { loading, request } = useApiRequest();
   const { copywriting } = useCopywriting();
@@ -24,11 +28,12 @@ const ButtonCheckout = ({ className = "", variant = "btn-primary", children = "S
   const handleSubscribe = async (type = "monthly") => {
     setSelectedPlan(type);
     await request(
-      () => clientApi.post(settings.paths.api.billingCreateCheckout, {
-        successUrl: window.location.origin + SUCCESS_URL_REDIRECT,
-        cancelUrl: window.location.origin + CANCEL_URL_REDIRECT,
-        type,
-      }),
+      () =>
+        clientApi.post(settings.paths.api.billingCreateCheckout, {
+          successUrl: window.location.origin + SUCCESS_URL_REDIRECT,
+          cancelUrl: window.location.origin + CANCEL_URL_REDIRECT,
+          type,
+        }),
       {
         keepLoadingOnSuccess: true,
         onSuccess: (message, data) => {
@@ -39,8 +44,8 @@ const ButtonCheckout = ({ className = "", variant = "btn-primary", children = "S
         },
         onError: () => {
           setSelectedPlan(null);
-        }
-      }
+        },
+      },
     );
   };
 

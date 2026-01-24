@@ -1,8 +1,8 @@
 "use client";
 
-import { useStyling } from "@/context/ContextStyling";
-import Title from "@/components/common/Title";
 import Paragraph from "@/components/common/Paragraph";
+import Title from "@/components/common/Title";
+import { useStyling } from "@/context/ContextStyling";
 
 const CardPost = ({
   title,
@@ -10,7 +10,7 @@ const CardPost = ({
   actions,
   onClick,
   className = "",
-  children
+  children,
 }) => {
   const { styling } = useStyling();
 
@@ -31,9 +31,7 @@ const CardPost = ({
         )}
       </div>
 
-      <Paragraph className="max-h-32 wrap-break-word">
-        {description}
-      </Paragraph>
+      <Paragraph className="max-h-32 wrap-break-word">{description}</Paragraph>
 
       {children}
     </div>

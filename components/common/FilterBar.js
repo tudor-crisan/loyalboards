@@ -1,7 +1,7 @@
 "use client";
-import SvgSearch from "@/components/svg/SvgSearch";
-import Select from "@/components/select/Select";
 import Input from "@/components/input/Input";
+import Select from "@/components/select/Select";
+import SvgSearch from "@/components/svg/SvgSearch";
 import { useStyling } from "@/context/ContextStyling";
 
 export default function FilterBar({
@@ -11,11 +11,14 @@ export default function FilterBar({
   setSort,
   sortOptions = [],
   placeholder = "Search...",
-  className = ""
+  className = "",
+  disabled = false,
 }) {
   const { styling } = useStyling();
   return (
-    <div className={`${styling.flex.col} sm:flex-row gap-4 mb-6 z-0 relative ${className}`}>
+    <div
+      className={`${styling.flex.col} sm:flex-row gap-4 mb-6 z-0 relative ${className}`}
+    >
       {/* Search Input */}
       <div className="flex-1 min-w-0">
         <Input
@@ -26,6 +29,7 @@ export default function FilterBar({
           onChange={(e) => setSearch && setSearch(e.target.value)}
           icon={<SvgSearch />}
           allowClear={true}
+          disabled={disabled}
         />
       </div>
 
@@ -37,6 +41,7 @@ export default function FilterBar({
             onChange={(e) => setSort(e.target.value)}
             options={sortOptions}
             className="w-full"
+            disabled={disabled}
           />
         </div>
       )}

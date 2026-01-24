@@ -1,37 +1,20 @@
-import { auth } from "@/libs/auth";
-import clientPromise from "@/libs/mongo";
+import { withApiHandler } from "@/libs/apiHandler";
+import { defaultSetting as setting } from "@/libs/defaults";
+import {
+  generateLogoBase64,
+  responseError,
+  responseSuccess,
+} from "@/libs/utils.server";
 import User from "@/models/User";
-import { isResponseMock, responseMock, responseSuccess, responseError, generateLogoBase64 } from "@/libs/utils.server";
-import { checkReqRateLimit } from "@/libs/rateLimit";
-
-import setting from "@/data/modules/setting.json";
 
 const TYPE = "UserUpdate";
 
-export async function POST(req) {
-  if (isResponseMock(TYPE)) {
-    return responseMock(TYPE);
-  }
+async function handler(req, { session }) {
+  const { serverError } = setting.forms.general.backend.responses;
 
-  const error = await checkReqRateLimit(req, "user-update");
-  if (error) return error;
-
-  const {
-    notAuthorized,
-    serverError,
-  } = setting.forms.general.backend.responses;
-
-  const {
-    profileUpdated
-  } = setting.forms.User.backend.responses;
+  const { profileUpdated } = setting.forms.User.backend.responses;
 
   try {
-    const session = await auth();
-
-    if (!session?.user) {
-      return responseError(notAuthorized.message, {}, notAuthorized.status);
-    }
-
     const { name, image, styling, visualConfig } = await req.json();
 
     // Generate logo server-side
@@ -44,15 +27,24 @@ export async function POST(req) {
       stylingData = { ...styling, logo };
     }
 
-    await clientPromise;
     await User.updateOne(
       { email: session.user.email },
-      { $set: { name, image, styling: stylingData } }
+      { $set: { name, image, styling: stylingData } },
     );
 
-    return responseSuccess(profileUpdated.message, { name, image, styling: stylingData }, profileUpdated.status);
+    return responseSuccess(
+      profileUpdated.message,
+      { name, image, styling: stylingData },
+      profileUpdated.status,
+    );
   } catch (e) {
     console.error("User update error: " + e?.message);
     return responseError(serverError.message, {}, serverError.status);
   }
 }
+
+export const POST = withApiHandler(handler, {
+  type: TYPE,
+  rateLimitKey: "user-update",
+  needAccess: false, // Profile update doesn't usually require paid access
+});

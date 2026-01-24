@@ -1,39 +1,20 @@
-import connectMongo from "@/libs/mongoose";
-import { auth } from "@/libs/auth";
-import { isResponseMock, responseMock, responseSuccess, responseError, getBaseUrl } from "@/libs/utils.server";
+import { withApiHandler } from "@/libs/apiHandler";
 import { defaultSetting as settings } from "@/libs/defaults";
-import User from "@/models/User";
+import {
+  getBaseUrl,
+  responseError,
+  responseSuccess,
+} from "@/libs/utils.server";
 import Stripe from "stripe";
-import { checkReqRateLimit } from "@/libs/rateLimit";
 
 const TYPE = "Billing";
 
-const {
-  notAuthorized,
-  sessionLost,
-  serverError,
-} = settings.forms.general.backend.responses;
+async function handler(req, { user }) {
+  const { serverError } = settings.forms.general.backend.responses;
 
-const {
-  urlsRequired,
-  checkoutCreated,
-} = settings.forms[TYPE].backend.responses;
-
-export async function POST(req) {
-  if (isResponseMock(TYPE)) {
-    return responseMock(TYPE);
-  };
-
-  const error = await checkReqRateLimit(req, "billing-create-checkout");
-  if (error) return error;
+  const { checkoutCreated } = settings.forms[TYPE].backend.responses;
 
   try {
-    const session = await auth();
-
-    if (!session) {
-      return responseError(notAuthorized.message, {}, notAuthorized.status);
-    }
-
     const body = await req.json();
 
     if (!body.successUrl) {
@@ -42,13 +23,6 @@ export async function POST(req) {
 
     if (!body.cancelUrl) {
       body.cancelUrl = getBaseUrl() + settings.paths.dashboard.source;
-    }
-
-    await connectMongo();
-    const user = await User.findById(session.user.id);
-
-    if (!user) {
-      return responseError(sessionLost.message, {}, sessionLost.status);
     }
 
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -97,11 +71,22 @@ export async function POST(req) {
       }
     }
 
-    const stripeCheckoutSession = await stripe.checkout.sessions.create(stripeSessionConfig);
+    const stripeCheckoutSession =
+      await stripe.checkout.sessions.create(stripeSessionConfig);
 
-    return responseSuccess(checkoutCreated.message, { url: stripeCheckoutSession.url }, checkoutCreated.status);
+    return responseSuccess(
+      checkoutCreated.message,
+      { url: stripeCheckoutSession.url },
+      checkoutCreated.status,
+    );
   } catch (e) {
     console.error("Stripe checkout creation error: " + e?.message);
     return responseError(serverError.message, {}, serverError.status);
   }
 }
+
+export const POST = withApiHandler(handler, {
+  type: TYPE,
+  rateLimitKey: "billing-create-checkout",
+  needAccess: false,
+});

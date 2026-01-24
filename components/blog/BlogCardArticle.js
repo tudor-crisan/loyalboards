@@ -1,16 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import BlogBadgeCategory from "./BlogBadgeCategory";
-import Title from "@/components/common/Title";
+import BlogBadgeCategory from "@/components/blog/BlogBadgeCategory";
 import Paragraph from "@/components/common/Paragraph";
-import { defaultSetting as config } from "@/libs/defaults";
 import TextSmall from "@/components/common/TextSmall";
+import Title from "@/components/common/Title";
 import IconBusinessImage from "@/components/icon/IconBusinessImage";
 import { useStyling } from "@/context/ContextStyling";
+import { defaultSetting as config } from "@/libs/defaults";
+import Link from "next/link";
 
-const BlogCardArticle = ({ article, showCategory = true, isImagePriority = false }) => {
+const BlogCardArticle = ({ article, showCategory = true }) => {
   const { styling } = useStyling();
 
   return (
@@ -22,7 +21,9 @@ const BlogCardArticle = ({ article, showCategory = true, isImagePriority = false
           title={article.title}
           rel="bookmark"
         >
-          <figure className={`aspect-video ${styling.flex.center} bg-base-200 overflow-hidden`}>
+          <figure
+            className={`aspect-video ${styling.flex.center} bg-base-200 overflow-hidden`}
+          >
             <div
               className="w-full h-full bg-primary"
               style={{
@@ -39,7 +40,6 @@ const BlogCardArticle = ({ article, showCategory = true, isImagePriority = false
         </Link>
       )}
       <div className="card-body">
-
         {showCategory && (
           <div className="flex flex-wrap gap-2">
             {article.categories.map((category) => (
@@ -60,9 +60,7 @@ const BlogCardArticle = ({ article, showCategory = true, isImagePriority = false
         </Title>
 
         <div className="space-y-4">
-          <Paragraph>
-            {article.description}
-          </Paragraph>
+          <Paragraph>{article.description}</Paragraph>
 
           <div className={`${styling.flex.items_center} gap-3 text-sm`}>
             <div
@@ -78,7 +76,9 @@ const BlogCardArticle = ({ article, showCategory = true, isImagePriority = false
                     {config.business.name}
                   </TextSmall>
                 </span>
-                <div className={`${styling.flex.items_center} gap-1.5 text-xs opacity-60`}>
+                <div
+                  className={`${styling.flex.items_center} gap-1.5 text-xs opacity-60`}
+                >
                   <span itemProp="datePublished">
                     {new Date(article.publishedAt).toLocaleDateString("en-US", {
                       month: "long",
@@ -89,7 +89,8 @@ const BlogCardArticle = ({ article, showCategory = true, isImagePriority = false
                     <>
                       <span>•</span>
                       <span>
-                        {Math.ceil(article.content.split(/\s+/).length / 200)} min read
+                        {Math.ceil(article.content.split(/\s+/).length / 200)}{" "}
+                        min read
                       </span>
                     </>
                   )}

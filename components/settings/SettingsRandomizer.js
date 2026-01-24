@@ -1,12 +1,17 @@
 "use client";
 
-import { useStyling } from "@/context/ContextStyling";
-import InputCheckbox from "@/components/input/InputCheckbox";
 import Button from "@/components/button/Button";
-import Grid from "@/components/common/Grid";
 import Tooltip from "@/components/common/Tooltip";
+import InputCheckbox from "@/components/input/InputCheckbox";
+import { useStyling } from "@/context/ContextStyling";
 
-export default function SettingsRandomizer({ config, onConfigChange, onShuffle, isLoading, title }) {
+export default function SettingsRandomizer({
+  config,
+  onConfigChange,
+  onShuffle,
+  isLoading,
+  title,
+}) {
   const { styling } = useStyling();
 
   if (!config) return null;
@@ -14,7 +19,8 @@ export default function SettingsRandomizer({ config, onConfigChange, onShuffle, 
   const isThemeEnabled = config.theme !== false;
   const isFontEnabled = config.font !== false;
   const isStylingEnabled = config.styling !== false;
-  const isShuffleDisabled = !isThemeEnabled && !isFontEnabled && !isStylingEnabled;
+  const isShuffleDisabled =
+    !isThemeEnabled && !isFontEnabled && !isStylingEnabled;
 
   return (
     <div className="space-y-4">
@@ -33,7 +39,9 @@ export default function SettingsRandomizer({ config, onConfigChange, onShuffle, 
 
       <div className="space-y-4">
         {/* Checkboxes Area */}
-        <div className={`${styling.flex.items_center} flex-wrap gap-x-4 gap-y-2`}>
+        <div
+          className={`${styling.flex.items_center} flex-wrap gap-x-4 gap-y-2`}
+        >
           <InputCheckbox
             label="Theme"
             value={isThemeEnabled}
@@ -59,9 +67,7 @@ export default function SettingsRandomizer({ config, onConfigChange, onShuffle, 
 
         {/* Shuffle Button Area */}
         <div className="flex justify-end">
-          <Tooltip
-            text={isShuffleDisabled ? "Select an option first" : ""}
-          >
+          <Tooltip text={isShuffleDisabled ? "Select an option first" : ""}>
             <Button
               onClick={onShuffle}
               className="w-full sm:w-auto btn-outline btn-sm min-h-[2.5rem]"

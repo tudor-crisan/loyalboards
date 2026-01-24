@@ -1,9 +1,9 @@
-import setting from "../data/modules/setting.json";
-import loyalboards_setting from "../data/apps/loyalboards/setting.json";
+import loyalboards_setting from "@/data/apps/loyalboards/setting.json";
+import setting from "@/data/modules/setting.json";
 
 const settings = {
-  setting,
   loyalboards_setting,
+  setting,
 };
 
 export default settings;

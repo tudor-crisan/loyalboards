@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export const sortOptions = [
   { label: "Top Voted", value: "votes_desc" },
@@ -20,12 +20,15 @@ const useBoardFiltering = (posts = [], externalState = null) => {
     if (!posts) return [];
 
     return [...posts]
-      .filter(post => {
+      .filter((post) => {
         if (!search) return true;
         const term = search.toLowerCase();
         return (
           post.title?.toLowerCase().includes(term) ||
-          post.description?.toLowerCase().includes(term)
+          post.description?.toLowerCase().includes(term) ||
+          post.comments?.some((comment) =>
+            comment.text?.toLowerCase().includes(term),
+          )
         );
       })
       .sort((a, b) => {
@@ -50,7 +53,7 @@ const useBoardFiltering = (posts = [], externalState = null) => {
     sort,
     setSort,
     filteredPosts,
-    sortOptions
+    sortOptions,
   };
 };
 

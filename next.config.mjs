@@ -6,13 +6,32 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Pre-load environment variables based on APP 
+// Pre-load environment variables based on APP
 const appName = process.env.APP || process.env.NEXT_PUBLIC_APP;
 if (appName) {
-  const envPath = path.join(__dirname, 'env', 'env-dev', `.env.dev.${appName}`);
+  const envPath = path.join(__dirname, "env", "env-dev", `.env.dev.${appName}`);
   if (fs.existsSync(envPath)) {
     dotenv.config({ path: envPath, quiet: true });
     console.log(`Loaded environment from: ${envPath}`);
+  }
+}
+
+// Load dynamic settings for the active app
+let appSettings = {};
+if (appName) {
+  try {
+    const { default: apps } = await import("./lists/applications.mjs");
+    const { default: settings } = await import("./lists/settings.node.mjs");
+    const { getMergedConfigWithModules } = await import("./libs/merge.mjs");
+
+    const appConfig = apps[appName];
+    const setting = appConfig?.setting;
+
+    if (setting) {
+      appSettings = getMergedConfigWithModules("setting", setting, settings);
+    }
+  } catch (error) {
+    console.error("Failed to load app settings:", error.message);
   }
 }
 
@@ -20,45 +39,34 @@ if (appName) {
 const nextConfig = {
   devIndicators: {
     appIsrStatus: false,
-    buildActivity: false
+    buildActivity: false,
   },
 
   async rewrites() {
-    const app = process.env.APP || process.env.NEXT_PUBLIC_APP;
-
-    if (!app) {
+    if (!appName) {
       console.warn("APP or NEXT_PUBLIC_APP not defined");
       return [];
     }
 
-    try {
-      // Dynamic imports to isolate load issues
-      const { default: apps } = await import("./lists/applications.mjs");
-      const { default: settings } = await import("./lists/settings.node.mjs");
-      const { getMergedConfigWithModules } = await import("./libs/merge.mjs");
+    const paths = appSettings?.paths || {};
+    const returnPaths = Object.values(paths).filter((path) => {
+      return path && typeof path === "object" && path.source && path.destination;
+    });
 
-      const appConfig = apps[app];
-      const setting = appConfig?.setting;
+    console.log("Rewrites loaded:", returnPaths.length);
+    return returnPaths;
+  },
 
-      if (!setting) {
-        console.warn("No setting for app:", app);
-        return [];
-      }
+  serverExternalPackages: ["mongoose"],
 
-      const appSettings = getMergedConfigWithModules("setting", setting, settings);
-      const paths = appSettings?.paths || {};
-
-      const returnPaths = Object.values(paths).filter(path => {
-        return path && typeof path === 'object' && path.source && path.destination;
-      });
-
-      console.log("Rewrites loaded:", returnPaths.length);
-      return returnPaths;
-    } catch (error) {
-      console.error("Rewrites error:", error.stack || error.message);
-      return [];
-    }
-  }
+  // Use dynamic maxUploadSize from settings
+  experimental: {
+    serverActions: {
+      bodySizeLimit:
+        appSettings?.forms?.general?.config?.maxUploadSize?.label?.toLowerCase() ||
+        "1mb",
+    },
+  },
 };
 
 export default nextConfig;

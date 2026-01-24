@@ -1,0 +1,490 @@
+{
+  "articles": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started with LoyalBoards",
+      "description": "Comprehensive guide to login, navigation, and your first steps.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Welcome to <b>LoyalBoards</b>! We've designed our platform to be as intuitive as possible. This guide will walk you through the basics of accessing your account and navigating the dashboard."
+        },
+        {
+          "type": "heading",
+          "text": "Logging In Securely"
+        },
+        {
+          "type": "paragraph",
+          "text": "We use a passwordless <b>Magic Link</b> system to ensure the highest security for your account. Here is how it works:"
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/login_screen.png",
+          "alt": "Login Screen Example showing email input",
+          "comment": "Screenshot of the login page. Draw an arrow pointing to the email input field to emphasize where to type."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Visit the login page and enter your email address.",
+            "Click <b>Sign in with email</b>.",
+            "Check your email inbox for a message from LoyalBoards.",
+            "Click the link inside the email to be instantly signed in."
+          ]
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/email_sent.png",
+          "alt": "Email account screen example showing email",
+          "comment": "Screenshot of the email that has been sent. Draw an arrow pointing to the button"
+        },
+        {
+          "type": "paragraph",
+          "text": "Note: If you don't see the email within a few minutes, please check your <b>Spam</b> or <b>Junk</b> folder."
+        },
+        {
+          "type": "heading",
+          "text": "Your Dashboard"
+        },
+        {
+          "type": "paragraph",
+          "text": "Once logged in, you will land on your personal Dashboard. This is the central hub where you can manage all your feedback boards, view aggregate analytics, and access settings."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/dashboard_overview.png",
+          "alt": "Dashboard Overview with Analytics cards and Board List",
+          "comment": "Full screenshot of the dashboard. Draw a box or arrow around the 'Analytics' section at the top, and another arrow pointing to the 'Create Board' button."
+        }
+      ]
+    },
+    {
+      "id": "managing-profile",
+      "title": "Your Profile & App Appearance",
+      "description": "Personalize your identity and the look of the application.",
+      "content": [
+        {
+          "type": "heading",
+          "text": "Editing Your Profile"
+        },
+        {
+          "type": "paragraph",
+          "text": "To update your personal details, click on `Edit profile` in the left corner of the screen. In the Profile tab, you can:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Display Name</b>: This is the name visible to you and potentially on comments you leave.",
+            "<b>Profile Picture</b>: Upload a custom image. If you remove it, we will default to your initials."
+          ]
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/profile_settings.png",
+          "alt": "Profile Settings Modal showing name and image upload",
+          "comment": "Screenshot of the Profile Settings modal. Highlight the 'Display Name' input and the file upload area for the picture."
+        },
+        {
+          "type": "heading",
+          "text": "Customizing App Appearance"
+        },
+        {
+          "type": "paragraph",
+          "text": "Make LoyalBoards your own with our flexible theming engine. In the Settings menu, navigate to the <b>Appearance</b> tab."
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Themes</b>: Choose from our curated list of light and dark themes.",
+            "<b>Randomizer</b>: Feeling adventurous? Use the Randomizer to generate a unique combination of fonts, colors, and border styles.",
+            "<b>Reset</b>: If you want to go back to the original look, simply click <b>Reset to default</b> at the bottom of the panel."
+          ]
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/profile_appearance.png",
+          "alt": "Appearance Settings",
+          "comment": "Screenshot of the Appearance tab. Point to the 'Randomizer' button or the list of themes."
+        }
+      ]
+    },
+    {
+      "id": "understanding-analytics",
+      "title": "Understanding Analytics",
+      "description": "Measure the pulse of your community with built-in metrics.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "The Dashboard provides a real-time overview of how your boards are performing. The metrics are aggregated across all your active boards."
+        },
+        {
+          "type": "heading",
+          "text": "Key Metrics Defined"
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Views</b>: The total number of times your boards have been visited by users.",
+            "<b>Posts</b>: The total count of feedback items or feature requests submitted.",
+            "<b>Votes</b>: A measure of community engagement, summing up all upvotes across all posts.",
+            "<b>Comments</b>: The total number of discussion replies on your posts."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Live Updates"
+        },
+        {
+          "type": "paragraph",
+          "text": "These numbers update automatically every few seconds, so you can watch your community grow in real-time during a launch or announcement."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/analytics_detail.png",
+          "alt": "Analytics Dashboard Card",
+          "comment": "Close-up screenshot of the Analytics card."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/analytics_boards.png",
+          "alt": "Analytics Dashboard Card",
+          "comment": "Close-up screenshot of the dashboard showing the 4 metrics (Views, Posts, Votes, Comments)."
+        }
+      ]
+    },
+    {
+      "id": "creating-boards",
+      "title": "Creating & Customizing Boards",
+      "description": "Master the art of board creation, from basic setup to advanced design.",
+      "content": [
+        {
+          "type": "heading",
+          "text": "Creating a New Board"
+        },
+        {
+          "type": "paragraph",
+          "text": "On your main dashboard, locate the <b>Create Board</b> section. Simply enter a name for your new board (e.g., 'Feature Requests' or 'Bug Reports') and click Create. Your board will be live instantly."
+        },
+        {
+          "type": "heading",
+          "text": "Basic Settings"
+        },
+        {
+          "type": "paragraph",
+          "text": "To access these, click the <b>Eye</b> icon on any board card."
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Slug (URL)</b>: You can customize the link to your board (e.g., <code>/b/roadmap</code>). Verified owners can change this once every 24 hours.",
+            "<b>Empty State</b>: Customize the message users see when there are no posts."
+          ]
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/board_edit_general.png",
+          "alt": "Board Edit Modal - General Settings tab",
+          "comment": "Screenshot of the General Settings tab. Draw an arrow pointing to the 'Slug' field to show where the URL is changed."
+        }
+      ]
+    },
+    {
+      "id": "advanced-board-settings",
+      "title": "Advanced Board Configuration",
+      "description": "Deep dive into Form settings, Comment toggles, and Input constraints.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Take full control of how users interact with your board using the <b>Extra Settings</b> panel."
+        },
+        {
+          "type": "heading",
+          "text": "Form & Input Customization"
+        },
+        {
+          "type": "paragraph",
+          "text": "You can tailor the submission form to match your specific use case (e.g., bug reporting vs feature requests)."
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Form Title</b>: Change the header above the input fields (e.g., 'Submit a Bug').",
+            "<b>Input Placeholders</b>: Guide your users with custom placeholder text.",
+            "<b>Character Limits</b>: Set minimum/maximum lengths for titles and descriptions to ensure quality submissions."
+          ]
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/board_edit_form_settings.png",
+          "alt": "Board Settings Panel",
+          "comment": "Screenshot of the 'General Form Settings' or 'Input: Title' accordion section expanded."
+        },
+        {
+          "type": "heading",
+          "text": "Comment Settings"
+        },
+        {
+          "type": "paragraph",
+          "text": "Decide whether users can discuss posts. You can <b>Toggle Comments</b> on or off for the entire board. This is useful for announcement-only boards."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/board_edit_comments.png",
+          "alt": "Board Edit Comments",
+          "comment": "Screenshot of the 'Comments Section'"
+        },
+        {
+          "type": "heading",
+          "text": "Appearance"
+        },
+        {
+          "type": "paragraph",
+          "text": "You can customize the appearance for each individual board, from the list of themes, fonts and give it a unique style with roundness or square look."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/board_edit_appearance.png",
+          "alt": "Board Edit Appearance",
+          "comment": "Screenshot of the 'Appearance Section'"
+        }
+      ]
+    },
+    {
+      "id": "notifications-and-digest",
+      "title": "Notifications & Weekly Digest",
+      "description": "Stay updated on your community's activity in real-time.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "LoyalBoards keeps you connected without overwhelming you."
+        },
+        {
+          "type": "heading",
+          "text": "Real-time Dashboard Notifications"
+        },
+        {
+          "type": "paragraph",
+          "text": "While looking at your dashboard or a board, new upvotes, posts, and comments appear <b>instantly</b> without needing to refresh the page. You will see live counters tick up as users interact."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/board_notifications.png",
+          "alt": "Board Notifications",
+          "comment": "Screenshot of the 'Board Notifications'"
+        },
+        {
+          "type": "heading",
+          "text": "The Weekly Digest"
+        },
+        {
+          "type": "paragraph",
+          "text": "Every week, we send a summary to your inbox containing high-level metrics:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Total Views for the week.",
+            "Number of new Votes, Posts and Comments."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "This helps you keep a pulse on your product's feedback loop even if you don't log in every day."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/board_weekly_digest.png",
+          "alt": "Board Weekly Digest",
+          "comment": "Screenshot of the 'Board Weekly Digest'"
+        }
+      ]
+    },
+    {
+      "id": "public-feedback",
+      "title": "Collecting Public Feedback",
+      "description": "How your users interact with your boards, voting, and commenting.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Your boards are public spaces where your community can shape your product. Here is what your users can do:"
+        },
+        {
+          "type": "heading",
+          "text": "Viewing and Filtering"
+        },
+        {
+          "type": "paragraph",
+          "text": "Users can browse all feedback posts. To find specific topics, they can use the <b>Search Bar</b> at the top. They can also <b>Sort</b> the list by 'Newest' or 'Top Voted' to see what's trending."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/public_board_view.png",
+          "alt": "Public Board View showing search and filter options",
+          "comment": "Screenshot of a public board. Highlight the Search input and the sort dropdown menu."
+        },
+        {
+          "type": "heading",
+          "text": "Interacting"
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Posting</b>: Users can submit new ideas using the form at the top of the board.",
+            "<b>Upvoting</b>: A simple click on the chevron icon upvotes a post. This requires no login if Anonymous Voting is enabled.",
+            "<b>Commenting</b>: Users can click on any post to open the details view and leave comments."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-and-accounts",
+      "title": "Security & Account Management",
+      "description": "Magic Links, Data Privacy, and Account settings.",
+      "content": [
+        {
+          "type": "heading",
+          "text": "Why Magic Links?"
+        },
+        {
+          "type": "paragraph",
+          "text": "We chose Magic Links over passwords because they are inherently more secure. There is no password to be stolen or guessed. Access is granted solely through control of your email account."
+        },
+        {
+          "type": "heading",
+          "text": "Account Data"
+        },
+        {
+          "type": "paragraph",
+          "text": "Your data is stored securely. We do not sell your personal information. All payment processing is handled by Stripe, a certified PCI Service Provider Level 1."
+        },
+        {
+          "type": "heading",
+          "text": "Account Deletion"
+        },
+        {
+          "type": "paragraph",
+          "text": "If you wish to delete your account and all associated data, please contact our support team. We process these requests within 48 hours."
+        }
+      ]
+    },
+    {
+      "id": "billing",
+      "title": "Billing & Subscription Management",
+      "description": "Understanding plans, payment methods, and access control.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "We offer flexible plans to suit your needs, including Monthly subscriptions and One-time Lifetime deals."
+        },
+        {
+          "type": "heading",
+          "text": "Managing Your Subscription"
+        },
+        {
+          "type": "paragraph",
+          "text": "Click the <b>Billing</b> button in your dashboard header to open the Customer Portal. From here you can:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Upgrade or Downgrade your plan.",
+            "Update your credit card or payment method.",
+            "Download past invoices for accounting."
+          ]
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/billing_portal.png",
+          "alt": "Billing Portal view",
+          "comment": "Screenshot of the billing portal. Just a general view is fine."
+        },
+        {
+          "type": "heading",
+          "text": "What happens if I cancel?"
+        },
+        {
+          "type": "paragraph",
+          "text": "If you cancel your subscription, your account will remain active until the end of the billing period. After that, your access to creating new boards will be restricted, but you will still be able to log in and view your data."
+        }
+      ]
+    },
+    {
+      "id": "moderation",
+      "title": "Moderation & Content",
+      "description": "Keeping your boards clean and relevant.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "As a board owner, you have full control over the content."
+        },
+        {
+          "type": "heading",
+          "text": "Deleting Posts"
+        },
+        {
+          "type": "paragraph",
+          "text": "To remove a post, simply find the <b>Trash Icon</b> on the post card. Confiming the deletion will permanently remove the post and all associated comments."
+        },
+        {
+          "type": "image",
+          "src": "/assets/help/loyalboards/moderation_delete.png",
+          "alt": "Deleting a post",
+          "comment": "Screenshot of a post card. Circle the trash/delete icon."
+        }
+      ]
+    },
+    {
+      "id": "legal-privacy",
+      "title": "Legal & Privacy",
+      "description": "Terms of Service, Privacy Policy, and Support Contacts.",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "We take your data privacy seriously. You can find our comprehensive legal documents here:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Privacy Policy</b>: <a href='/privacy'>/privacy</a> - Details on how we handle your data.",
+            "<b>Terms of Service</b>: <a href='/terms'>/terms</a> - The rules governing the use of our platform."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Address & Contact"
+        },
+        {
+          "type": "paragraph",
+          "text": "Our business address and contact details are always kept up-to-date on our support page. If you have specific legal questions, please email us through support."
+        }
+      ]
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting & Support",
+      "description": "Solutions to common issues and how to contact us.",
+      "content": [
+        {
+          "type": "heading",
+          "text": "Common Issues"
+        },
+        {
+          "type": "list",
+          "items": [
+            "<b>Magic Link not arriving</b>: Check your Spam/Promotions folder. Ensure you entered the correct email address.",
+            "<b>Cannot change Board URL</b>: For security, we limit URL changes to once every 24 hours per board.",
+            "<b>Changes not saving</b>: Ensure you are connected to the internet. Our app syncs in real-time, but a dropped connection might prevent saves."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Contact Support"
+        },
+        {
+          "type": "paragraph",
+          "text": "If you need further assistance, please don't hesitate to reach out."
+        }
+      ]
+    }
+  ]
+}

@@ -1,30 +1,56 @@
-if (typeof window === "undefined") {
-  const dotenv = await import("dotenv");
-  const fs = await import("fs");
-  const path = await import("path");
-
-  const appName = process.env.APP || process.env.NEXT_PUBLIC_APP;
-  if (appName) {
-    const envPath = path.join(process.cwd(), 'env', 'env-dev', `.env.dev.${appName}`);
-    if (fs.existsSync(envPath)) {
-      dotenv.config({ path: envPath, quiet: true });
-    }
-  }
-}
-
+import { loadAppEnv } from "@/libs/env";
 import mongoose from "mongoose";
 
-const connectMongo = async () => {
-  if (!process.env.MONGO_URI || !process.env.MONGO_DB || !process.env.MONGO_QUERY) {
-    console.warn('Invalid/Missing environment variable: "MONGO_URI". MongoDB connection will be skipped.');
+loadAppEnv();
+
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections from growing exponentially
+ * during API Route usage.
+ */
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectMongo() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (
+    !process.env.MONGO_URI ||
+    !process.env.MONGO_DB ||
+    !process.env.MONGO_QUERY
+  ) {
+    console.warn(
+      'Invalid/Missing environment variable: "MONGO_URI". MongoDB connection will be skipped.',
+    );
     return;
   }
-  try {
-    const uri = process.env.MONGO_URI + process.env.MONGO_DB + process.env.MONGO_QUERY;
-    await mongoose.connect(uri);
-  } catch (e) {
-    console.error(`❌ Mongoose error: ${e.message}`);
+
+  if (!cached.promise) {
+    const uri =
+      process.env.MONGO_URI + process.env.MONGO_DB + process.env.MONGO_QUERY;
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(uri, opts).then((mongoose) => {
+      return mongoose;
+    });
   }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    console.error(`❌ Mongoose error: ${e.message}`);
+    throw e;
+  }
+
+  return cached.conn;
 }
 
 export default connectMongo;

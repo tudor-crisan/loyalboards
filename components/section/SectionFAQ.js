@@ -1,10 +1,10 @@
 "use client";
-import { useCopywriting } from "@/context/ContextCopywriting";
-import { useStyling } from "@/context/ContextStyling";
-import SectionWrapper from "@/components/section/SectionWrapper";
-import { cn } from "@/libs/utils.client";
 import Accordion from "@/components/common/Accordion";
 import SectionHeading from "@/components/section/SectionHeading";
+import SectionWrapper from "@/components/section/SectionWrapper";
+import { useCopywriting } from "@/context/ContextCopywriting";
+import { useStyling } from "@/context/ContextStyling";
+import { cn } from "@/libs/utils.client";
 
 export default function SectionFAQ() {
   const { copywriting } = useCopywriting();
@@ -17,7 +17,10 @@ export default function SectionFAQ() {
   }));
 
   return (
-    <SectionWrapper id="faq" containerClassName={cn(styling.flex.col, "space-y-6 justify-center")}>
+    <SectionWrapper
+      id="faq"
+      containerClassName={cn(styling.flex.col, "space-y-6 justify-center")}
+    >
       <SectionHeading
         label={faq.label}
         headline={faq.headline}

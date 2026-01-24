@@ -1,23 +1,23 @@
 "use client";
-import { useState, Suspense, useEffect } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { useStyling } from "@/context/ContextStyling";
-import HeaderTop from "@/components/header/HeaderTop";
-import SvgGoogle from "@/components/svg/SvgGoogle";
 import Button from "@/components/button/Button";
-import Input from "@/components/input/Input";
 import ButtonBack from "@/components/button/ButtonBack";
-import { defaultSetting as settings } from "@/libs/defaults";
-import Label from "@/components/common/Label";
+import Divider from "@/components/common/Divider";
+import Error from "@/components/common/Error";
 import Form from "@/components/common/Form";
+import Label from "@/components/common/Label";
+import FooterAuth from "@/components/footer/FooterAuth";
+import HeaderTop from "@/components/header/HeaderTop";
+import Input from "@/components/input/Input";
+import SvgGoogle from "@/components/svg/SvgGoogle";
+import { useAuth } from "@/context/ContextAuth";
+import { useStyling } from "@/context/ContextStyling";
 import { useAuthError } from "@/hooks/useAuthError";
 import { useError } from "@/hooks/useError";
-import Error from "@/components/common/Error";
-import Divider from "@/components/common/Divider";
-import { useAuth } from "@/context/ContextAuth";
-import FooterAuth from "@/components/footer/FooterAuth";
+import { defaultSetting as settings } from "@/libs/defaults";
+import { toast } from "@/libs/toast";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const CALLBACK_URL = settings.paths.dashboard.source;
 
@@ -47,7 +47,11 @@ function SignInContent() {
   const handleSignIn = async (provider, options, setLoading) => {
     setLoading(true);
     try {
-      const res = await signIn(provider, { ...options, callbackUrl: CALLBACK_URL, redirect: false });
+      const res = await signIn(provider, {
+        ...options,
+        callbackUrl: CALLBACK_URL,
+        redirect: false,
+      });
 
       if (res?.error) {
         setLoading(false);
@@ -87,38 +91,38 @@ function SignInContent() {
             <Error message={errorMessage} />
 
             {!settings.auth.providers.length && (
-              <p className="text-center">No sign-in methods available at this time</p>
+              <p className="text-center">
+                No sign-in methods available at this time
+              </p>
             )}
-            {settings.auth.providers.includes("resend") && <>
-              <Form onSubmit={handleEmailSignIn} className="space-y-3">
-                <div className="space-y-1">
-                  <Label>
-                    Email Address
-                  </Label>
-                  <Input
-                    required
-                    type="email"
-                    placeholder="email@example.com"
-                    className={styling.components.input}
-                    value={email}
+            {settings.auth.providers.includes("resend") && (
+              <>
+                <Form onSubmit={handleEmailSignIn} className="space-y-3">
+                  <div className="space-y-1">
+                    <Label>Email Address</Label>
+                    <Input
+                      required
+                      type="email"
+                      placeholder="email@example.com"
+                      className={styling.components.input}
+                      value={email}
+                      disabled={disabled}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    variant="btn-primary w-full"
+                    className="btn-md!"
+                    isLoading={loadingEmail}
                     disabled={disabled}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  variant="btn-primary w-full"
-                  className="btn-md!"
-                  isLoading={loadingEmail}
-                  disabled={disabled}
-                >
-                  Sign in with Email
-                </Button>
-              </Form>
-              {settings.auth.providers.length > 1 && (
-                <Divider />
-              )}
-            </>}
+                  >
+                    Sign in with Email
+                  </Button>
+                </Form>
+                {settings.auth.providers.length > 1 && <Divider />}
+              </>
+            )}
             {settings.auth.providers.includes("google") && (
               <Button
                 onClick={handleGoogleSignIn}
@@ -139,23 +143,20 @@ function SignInContent() {
             </div>
           </div>
         </div>
-        {settings.auth.providers.length > 0 && (
-          <FooterAuth />
-        )}
+        {settings.auth.providers.length > 0 && <FooterAuth />}
       </div>
     </div>
-
   );
 }
 
 export default function SignInPage() {
   const { styling } = useStyling();
   return (
-    <Suspense fallback={(
-      <div className={`min-h-screen ${styling.flex.center}`}>
-        Loading...
-      </div>
-    )}>
+    <Suspense
+      fallback={
+        <div className={`min-h-screen ${styling.flex.center}`}>Loading...</div>
+      }
+    >
       <SignInContent />
     </Suspense>
   );

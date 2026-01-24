@@ -1,12 +1,12 @@
 "use client";
+import HeroButton from "@/components/hero/HeroButton";
 import HeroImage from "@/components/hero/HeroImage";
 import HeroVideo from "@/components/hero/HeroVideo";
-import HeroButton from "@/components/hero/HeroButton";
 import SectionHeading from "@/components/section/SectionHeading";
+import SectionWrapper from "@/components/section/SectionWrapper";
+import { useCopywriting } from "@/context/ContextCopywriting";
 import { useStyling } from "@/context/ContextStyling";
 import { useVisual } from "@/context/ContextVisual";
-import { useCopywriting } from "@/context/ContextCopywriting";
-import SectionWrapper from "@/components/section/SectionWrapper";
 import { cn } from "@/libs/utils.client";
 
 export default function SectionHero() {
@@ -17,11 +17,16 @@ export default function SectionHero() {
   const showHero = visual.show.SectionHero;
 
   return (
-    <SectionWrapper id="hero" containerClassName={cn(styling.SectionHero.container)}>
-      <div className={cn(showHero.button ? 'space-y-6' : 'space-y-3')}>
+    <SectionWrapper
+      id="hero"
+      containerClassName={cn(styling.SectionHero.container)}
+    >
+      <div className={cn(showHero.button ? "space-y-6" : "space-y-3")}>
         <SectionHeading
           headline={showHero.headline ? copywriting.SectionHero.headline : null}
-          paragraph={showHero.paragraph ? copywriting.SectionHero.paragraph : null}
+          paragraph={
+            showHero.paragraph ? copywriting.SectionHero.paragraph : null
+          }
           align={styling.SectionHero.textalign}
           headlineClassName={styling.SectionHero.headline}
           paragraphClassName={styling.SectionHero.paragraph}

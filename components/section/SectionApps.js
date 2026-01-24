@@ -1,15 +1,15 @@
 "use client";
-import { useStyling } from "@/context/ContextStyling";
+import Button from "@/components/button/Button";
+import Flex from "@/components/common/Flex";
 import Grid from "@/components/common/Grid";
-import { getAppDetails } from "@/libs/apps";
-import Image from "next/image";
 import Paragraph from "@/components/common/Paragraph";
 import Title from "@/components/common/Title";
-import { cn } from "@/libs/utils.client";
-import Button from "@/components/button/Button";
-import { defaultSetting as settings } from "@/libs/defaults";
-import Flex from "@/components/common/Flex";
 import SectionWrapper from "@/components/section/SectionWrapper";
+import { useStyling } from "@/context/ContextStyling";
+import { getAppDetails } from "@/libs/apps";
+import { defaultSetting as settings } from "@/libs/defaults";
+import { cn } from "@/libs/utils.client";
+import Image from "next/image";
 
 const SectionAppsContent = () => {
   const { styling } = useStyling();
@@ -20,10 +20,15 @@ const SectionAppsContent = () => {
     const { title, description, favicon, website, appName } = details;
 
     return (
-      <div key={app} className={cn("card w-full max-w-sm", styling.components.card)}>
+      <div
+        key={app}
+        className={cn("card w-full max-w-sm", styling.components.card)}
+      >
         <div className={cn("card-body space-y-6", styling.general.box)}>
           {(favicon || appName) && (
-            <div className={`${styling.flex.items_center} gap-2 font-extrabold`}>
+            <div
+              className={`${styling.flex.items_center} gap-2 font-extrabold`}
+            >
               {favicon && (
                 <Image
                   src={favicon}
@@ -44,16 +49,12 @@ const SectionAppsContent = () => {
             </div>
           )}
 
-          {website && (
-            <Button href={website}>
-              View App
-            </Button>
-          )}
+          {website && <Button href={website}>View App</Button>}
         </div>
       </div>
     );
   });
-}
+};
 
 export default function SectionApps() {
   return (

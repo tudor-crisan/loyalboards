@@ -1,8 +1,8 @@
-import { formatCommentDate } from "@/libs/utils.client";
-import ProfileImage from "@/components/common/ProfileImage";
 import Button from "@/components/button/Button";
-import SvgTrash from "@/components/svg/SvgTrash";
+import ProfileImage from "@/components/common/ProfileImage";
 import TextSmall from "@/components/common/TextSmall";
+import SvgTrash from "@/components/svg/SvgTrash";
+import { formattedDate } from "@/libs/utils.client";
 
 const CommentItem = ({
   comment,
@@ -12,12 +12,14 @@ const CommentItem = ({
   onDelete,
   localCommentIds = [],
 }) => {
-  const isOwner = comment.userId?._id && comment.boardId?.userId === comment.userId._id;
+  const isOwner =
+    comment.userId?._id && comment.boardId?.userId === comment.userId._id;
   const isAuthor = user?.id && comment.userId?._id === user.id;
   const isBoardOwner = user?.id && comment.boardId?.userId === user.id;
   const isLocal = localCommentIds.includes(comment._id);
 
-  const canDelete = config.allowDeletion && (isAuthor || isBoardOwner || isLocal);
+  const canDelete =
+    config.allowDeletion && (isAuthor || isBoardOwner || isLocal);
 
   return (
     <div className="flex gap-3 items-start">
@@ -32,7 +34,9 @@ const CommentItem = ({
             {comment.userId?.name || comment.name || "Anonymous"}
             {/* Owner Badge */}
             {isOwner && (
-              <span className={`${styling?.components?.element || ""} badge badge-outline badge-xs h-5 pointer-events-none select-none ml-2`}>
+              <span
+                className={`${styling?.components?.element || ""} badge badge-outline badge-xs h-5 pointer-events-none select-none ml-2`}
+              >
                 {config.ownerBadgeText || "Owner"}
               </span>
             )}
@@ -41,7 +45,7 @@ const CommentItem = ({
           <div className={`${styling.flex.items_center} gap-2`}>
             {config.showDate && (
               <TextSmall className="line-clamp-2 max-w-20 text-center text-base-content/50">
-                {formatCommentDate(comment.createdAt || new Date())}
+                {formattedDate(comment.createdAt || new Date())}
               </TextSmall>
             )}
 

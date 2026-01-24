@@ -1,10 +1,11 @@
 "use client";
-import { useRef } from "react";
 import Button from "@/components/button/Button";
-import useUpload from "@/hooks/useUpload";
-import { cn } from "@/libs/utils.client";
+import Paragraph from "@/components/common/Paragraph";
 import { useStyling } from "@/context/ContextStyling";
-import Paragraph from "./Paragraph";
+import useUpload from "@/hooks/useUpload";
+import { defaultSetting } from "@/libs/defaults";
+import { cn } from "@/libs/utils.client";
+import { useRef } from "react";
 
 const Upload = ({ onFileSelect, className }) => {
   const { styling } = useStyling();
@@ -52,7 +53,8 @@ const Upload = ({ onFileSelect, className }) => {
         {isLoading ? "Processing..." : "Choose Image"}
       </Button>
       <Paragraph>
-        Max 2MB. formats: JPG, PNG, GIF
+        Max {defaultSetting.forms.general.config.maxUploadSize.label}. formats:
+        JPG, PNG, GIF
       </Paragraph>
     </div>
   );

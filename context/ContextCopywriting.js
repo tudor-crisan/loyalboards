@@ -1,8 +1,10 @@
 "use client";
-import { createContext, useContext } from "react";
 import { defaultCopywriting } from "@/libs/defaults";
+import { createContext, useContext } from "react";
 
-export const ContextCopywriting = createContext({ copywriting: defaultCopywriting });
+export const ContextCopywriting = createContext({
+  copywriting: defaultCopywriting,
+});
 
 export function useCopywriting() {
   return useContext(ContextCopywriting);

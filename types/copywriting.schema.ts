@@ -1,10 +1,14 @@
+import {
+  ButtonSchema,
+  LinkSchema,
+  MenuItemSchema,
+} from "@/types/common.schema";
 import { z } from "zod";
-import { MenuItemSchema, ButtonSchema, LinkSchema } from "./common.schema";
 
 /**
  * Zod Schema for Section Header.
  */
-export const SectionHeaderSchema = z.object({
+export const CopywritingSectionHeaderSchema = z.object({
   appName: z
     .string()
     .max(30, "App name must be 30 characters or less.")
@@ -18,7 +22,7 @@ export const SectionHeaderSchema = z.object({
 /**
  * Zod Schema for Section Hero.
  */
-export const SectionHeroSchema = z.object({
+export const CopywritingSectionHeroSchema = z.object({
   headline: z
     .string()
     .max(80, "Headline must be 80 characters or less.")
@@ -51,10 +55,12 @@ export const SectionPricingSchema = z.object({
     .string()
     .max(60, "Headline must be 60 characters or less.")
     .describe("Main headline for pricing."),
-  formattedPlans: z.object({
-    monthly: PricingPlanSchema.optional(),
-    lifetime: PricingPlanSchema.optional(),
-  }).describe("Configured pricing plans."),
+  formattedPlans: z
+    .object({
+      monthly: PricingPlanSchema.optional(),
+      lifetime: PricingPlanSchema.optional(),
+    })
+    .describe("Configured pricing plans."),
   button: ButtonSchema.optional().describe("Call to action button."),
   features: z
     .array(z.string())
@@ -69,7 +75,10 @@ export const SectionPricingSchema = z.object({
 export const SectionBlogSchema = z.object({
   label: z.string().describe("Section label."),
   headline: z.string().describe("Section headline."),
-  description: z.string().optional().describe("Supporting text for the blog section."),
+  description: z
+    .string()
+    .optional()
+    .describe("Supporting text for the blog section."),
   button: ButtonSchema.optional().describe("Link to the full blog."),
 });
 
@@ -90,7 +99,7 @@ export const QuestionItemSchema = z.object({
 /**
  * Zod Schema for FAQ Section.
  */
-export const SectionFAQSchema = z.object({
+export const CopywritingSectionFAQSchema = z.object({
   label: z.string().describe("Section label."),
   headline: z.string().describe("Section headline."),
   questions: z
@@ -110,7 +119,7 @@ export const FooterMenuSchema = z.object({
 /**
  * Zod Schema for Footer Section.
  */
-export const SectionFooterSchema = z.object({
+export const CopywritingSectionFooterSchema = z.object({
   brand: z
     .object({
       rights: z.string().describe("Copyright text."),
@@ -128,19 +137,23 @@ export const SectionFooterSchema = z.object({
  * Main Landing Page Config Schema.
  */
 export const CopywritingSchema = z.object({
-  SectionHeader: SectionHeaderSchema.partial(),
-  SectionHero: SectionHeroSchema.partial(),
+  SectionHeader: CopywritingSectionHeaderSchema.partial(),
+  SectionHero: CopywritingSectionHeroSchema.partial(),
   SectionPricing: SectionPricingSchema.partial(),
   SectionBlog: SectionBlogSchema.partial(),
-  SectionFAQ: SectionFAQSchema.partial(),
-  SectionFooter: SectionFooterSchema.partial(),
+  SectionFAQ: CopywritingSectionFAQSchema.partial(),
+  SectionFooter: CopywritingSectionFooterSchema.partial(),
 });
 
 // Export inferred Types for usage in TypeScript code
 export type Copywriting = z.infer<typeof CopywritingSchema>;
-export type SectionHeader = z.infer<typeof SectionHeaderSchema>;
-export type SectionHero = z.infer<typeof SectionHeroSchema>;
-export type SectionPricing = z.infer<typeof SectionPricingSchema>;
-export type SectionBlog = z.infer<typeof SectionBlogSchema>;
-export type SectionFAQ = z.infer<typeof SectionFAQSchema>;
+export type CopywritingSectionHeader = z.infer<
+  typeof CopywritingSectionHeaderSchema
+>;
+export type CopywritingSectionHero = z.infer<
+  typeof CopywritingSectionHeroSchema
+>;
+export type CopywritingSectionPricing = z.infer<typeof SectionPricingSchema>;
+export type CopywritingSectionBlog = z.infer<typeof SectionBlogSchema>;
+export type CopywritingSectionFAQ = z.infer<typeof CopywritingSectionFAQSchema>;
 export type PricingPlan = z.infer<typeof PricingPlanSchema>;

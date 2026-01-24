@@ -1,10 +1,10 @@
 "use client";
-import Select from "@/components/select/Select";
-import InputButton from "@/components/input/InputButton";
-import Label from "@/components/common/Label";
 import Grid from "@/components/common/Grid";
-import themes from "@/lists/themes";
+import Label from "@/components/common/Label";
+import InputButton from "@/components/input/InputButton";
+import Select from "@/components/select/Select";
 import { fontMap } from "@/lists/fonts";
+import themes from "@/lists/themes";
 
 export default function SettingsAppearance({ styling, onChange, isLoading }) {
   if (!styling) return null;
@@ -70,7 +70,10 @@ export default function SettingsAppearance({ styling, onChange, isLoading }) {
   };
 
   // Determine current radius from a sample component (e.g., input)
-  const currentRadius = styling.components?.input?.split(" ").find((c) => c.startsWith("rounded-")) || "rounded-md";
+  const currentRadius =
+    styling.components?.input
+      ?.split(" ")
+      .find((c) => c.startsWith("rounded-")) || "rounded-md";
 
   return (
     <Grid>
@@ -92,7 +95,10 @@ export default function SettingsAppearance({ styling, onChange, isLoading }) {
           className="w-full"
           value={styling.font || Object.keys(fontMap)[0]}
           onChange={(e) => updateStyling("font", e.target.value)}
-          options={Object.entries(fontMap).map(([key, name]) => ({ label: name, value: key }))}
+          options={Object.entries(fontMap).map(([key, name]) => ({
+            label: name,
+            value: key,
+          }))}
           withNavigation={true}
           disabled={isLoading}
         />

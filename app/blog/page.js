@@ -1,12 +1,12 @@
-import BlogCategoryList from "@/components/blog/BlogCategoryList";
 import BlogArticleList from "@/components/blog/BlogArticleList";
-import Title from "@/components/common/Title";
+import BlogCategoryList from "@/components/blog/BlogCategoryList";
+import BlogDisclaimer from "@/components/blog/BlogDisclaimer";
+import BlogSchemaCollection from "@/components/blog/BlogSchemaCollection";
 import Paragraph from "@/components/common/Paragraph";
+import Title from "@/components/common/Title";
+import PagesBlog from "@/components/pages/PagesBlog";
 import { defaultBlog, defaultStyling } from "@/libs/defaults";
 import { getMetadata } from "@/libs/seo";
-import PagesBlog from "@/components/pages/PagesBlog";
-import BlogSchemaCollection from "@/components/blog/BlogSchemaCollection";
-import BlogDisclaimer from "@/components/blog/BlogDisclaimer";
 
 const { articles, categories } = defaultBlog;
 
@@ -23,13 +23,15 @@ export default async function Blog() {
     .map((article) => ({
       ...article,
       categories: article.categorySlugs.map((slug) =>
-        categories.find((c) => c.slug === slug)
+        categories.find((c) => c.slug === slug),
       ),
     }));
   return (
     <PagesBlog>
       <BlogSchemaCollection articles={articlesToDisplay} />
-      <section className={`${defaultStyling.general.container} space-y-3 mt-6 mb-12 px-4`}>
+      <section
+        className={`${defaultStyling.general.container} space-y-3 mt-6 mb-12 px-4`}
+      >
         <BlogDisclaimer />
         <Title className={`${defaultStyling.section.title} mt-4`}>
           {defaultBlog.title}
@@ -37,7 +39,6 @@ export default async function Blog() {
         <Paragraph className="text-lg opacity-80 leading-relaxed">
           {defaultBlog.description}
         </Paragraph>
-
       </section>
 
       <section className={`${defaultStyling.general.container} px-4 mb-12`}>
@@ -47,7 +48,9 @@ export default async function Blog() {
         <BlogCategoryList />
       </section>
 
-      <section className={`${defaultStyling.general.container} mb-12 sm:mb-24 px-4`}>
+      <section
+        className={`${defaultStyling.general.container} mb-12 sm:mb-24 px-4`}
+      >
         <BlogArticleList articles={articlesToDisplay} />
       </section>
     </PagesBlog>

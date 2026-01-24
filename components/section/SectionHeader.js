@@ -1,13 +1,13 @@
 "use client";
-import WrapperHeader from "@/components/wrapper/WrapperHeader";
-import HeaderTop from "@/components/header/HeaderTop";
-import HeaderMenu from "@/components/header/HeaderMenu";
-import HeaderHamburger from "@/components/header/HeaderHamburger";
 import HeaderButton from "@/components/header/HeaderButton";
-import { useVisual } from "@/context/ContextVisual";
-import { useStyling } from "@/context/ContextStyling";
-import { defaultSetting as settings } from "@/libs/defaults";
+import HeaderHamburger from "@/components/header/HeaderHamburger";
+import HeaderMenu from "@/components/header/HeaderMenu";
+import HeaderTop from "@/components/header/HeaderTop";
+import WrapperHeader from "@/components/wrapper/WrapperHeader";
 import { useCopywriting } from "@/context/ContextCopywriting";
+import { useStyling } from "@/context/ContextStyling";
+import { useVisual } from "@/context/ContextVisual";
+import { defaultSetting as settings } from "@/libs/defaults";
 import { cn } from "@/libs/utils.client";
 
 export default function SectionHeader() {
@@ -22,9 +22,7 @@ export default function SectionHeader() {
   return (
     <section id="header" className={cn(styling.SectionHeader.colors)}>
       <WrapperHeader>
-        {showHeader.top && (
-          <HeaderTop url={settings.paths.home.source} />
-        )}
+        {showHeader.top && <HeaderTop url={settings.paths.home.source} />}
         {hasMenu && (
           <>
             <HeaderMenu />

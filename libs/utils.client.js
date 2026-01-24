@@ -1,8 +1,8 @@
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function getEmailHandle(email = "", fallback = "") {
@@ -36,31 +36,52 @@ export function isMobile() {
   return window.matchMedia("(max-width: 768px)").matches;
 }
 
-export function pluralize(word = '', count = 0) {
-  return word + ((count > 1 || count === 0) ? 's' : '')
+export function pluralize(word = "", count = 0) {
+  return word + (count > 1 || count === 0 ? "s" : "");
 }
 
 export function baseUrl() {
-  return process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://" + process.env.NEXT_PUBLIC_DOMAIN
+  if (process.env.NODE_ENV === "development") return "http://localhost:3000";
+  if (!process.env.NEXT_PUBLIC_DOMAIN) return "";
+  return "https://" + process.env.NEXT_PUBLIC_DOMAIN;
 }
 
 let clientId = null;
 export function getClientId() {
-  if (!clientId && typeof window !== 'undefined') {
-    clientId = Math.random().toString(36).substring(2, 15);
+  if (typeof window === "undefined") return null;
+
+  if (clientId) return clientId;
+
+  // Try to get from localStorage
+  try {
+    clientId = window.localStorage.getItem("x-client-id");
+  } catch (e) {
+    console.error("Error reading client ID from localStorage", e);
   }
+
+  // If not found, generate and save
+  if (!clientId) {
+    clientId = Math.random().toString(36).substring(2, 15);
+    try {
+      window.localStorage.setItem("x-client-id", clientId);
+    } catch (e) {
+      console.error("Error saving client ID to localStorage", e);
+    }
+  }
+
   return clientId;
 }
 
 export function createSlug(name = "", trim = true) {
-  const slug = name.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-');
-  const cleaned = trim ? slug.replace(/^-+|-+$/g, '') : slug;
+  const slug = name
+    .toString()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-");
+  const cleaned = trim ? slug.replace(/^-+|-+$/g, "") : slug;
   return cleaned.slice(0, 30);
 }
 
-export function formatCommentDate(date) {
+export function formattedDate(date) {
   if (!date) return "";
   const d = new Date(date);
   return d.toLocaleString(undefined, {

@@ -1,34 +1,19 @@
-
-import connectMongo from "@/libs/mongoose";
-import { isResponseMock, responseMock, responseSuccess, responseError } from "@/libs/utils.server";
+import { withApiHandler } from "@/libs/apiHandler";
 import { defaultSetting as settings } from "@/libs/defaults";
+import {
+  createNotification,
+  trackEvent,
+} from "@/libs/modules/boards/analytics";
+import { responseError, responseSuccess } from "@/libs/utils.server";
 import Post from "@/models/modules/boards/Post";
-import { checkReqRateLimit } from "@/libs/rateLimit";
-import { trackEvent, createNotification } from "@/libs/modules/boards/analytics";
 
 const TYPE = "Vote";
 
-const {
-  serverError,
-} = settings.forms.general.backend.responses;
+async function postHandler(req, { user }) {
+  const { serverError } = settings.forms.general.backend.responses;
 
-export async function POST(req) {
-  if (isResponseMock(TYPE)) {
-    return responseMock(TYPE);
-  };
-
-  if (!settings.forms?.[TYPE]) {
-    return responseError(serverError.message, {}, serverError.status);
-  }
-
-  const {
-    voteRecorded,
-    postNotFound,
-    postIdRequired,
-  } = settings.forms[TYPE].backend.responses;
-
-  const error = await checkReqRateLimit(req, "vote-toggle");
-  if (error) return error;
+  const { voteRecorded, postNotFound, postIdRequired } =
+    settings.forms[TYPE].backend.responses;
 
   try {
     const { searchParams } = req.nextUrl;
@@ -37,8 +22,6 @@ export async function POST(req) {
     if (!postId) {
       return responseError(postIdRequired.message, {}, postIdRequired.status);
     }
-
-    await connectMongo();
 
     const post = await Post.findById(postId);
 
@@ -59,33 +42,18 @@ export async function POST(req) {
       postTitle: post.title,
     });
 
-    // Emitting via Change Stream now (handled in stream/route.js)
-
-    return responseSuccess(voteRecorded.message, {}, voteRecorded.status)
-
+    return responseSuccess(voteRecorded.message, {}, voteRecorded.status);
   } catch (e) {
     console.error("Vote error: " + e?.message);
     return responseError(serverError.message, {}, serverError.status);
   }
 }
 
-export async function DELETE(req) {
-  if (isResponseMock(TYPE)) {
-    return responseMock(TYPE);
-  };
+async function deleteHandler(req, { user }) {
+  const { serverError } = settings.forms.general.backend.responses;
 
-  if (!settings.forms?.[TYPE]) {
-    return responseError(serverError.message, {}, serverError.status);
-  }
-
-  const {
-    voteRemoved,
-    postNotFound,
-    postIdRequired,
-  } = settings.forms[TYPE].backend.responses;
-
-  const error = await checkReqRateLimit(req, "vote-toggle");
-  if (error) return error;
+  const { voteRemoved, postNotFound, postIdRequired } =
+    settings.forms[TYPE].backend.responses;
 
   try {
     const { searchParams } = req.nextUrl;
@@ -94,8 +62,6 @@ export async function DELETE(req) {
     if (!postId) {
       return responseError(postIdRequired.message, {}, postIdRequired.status);
     }
-
-    await connectMongo();
 
     const post = await Post.findById(postId);
 
@@ -115,3 +81,17 @@ export async function DELETE(req) {
     return responseError(serverError.message, {}, serverError.status);
   }
 }
+
+export const POST = withApiHandler(postHandler, {
+  type: TYPE,
+  rateLimitKey: "vote-toggle",
+  needAuth: false,
+  needAccess: false,
+});
+
+export const DELETE = withApiHandler(deleteHandler, {
+  type: TYPE,
+  rateLimitKey: "vote-toggle",
+  needAuth: false,
+  needAccess: false,
+});

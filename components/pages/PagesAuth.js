@@ -1,9 +1,9 @@
 "use client";
-import { useStyling } from "@/context/ContextStyling";
-import { useAuth } from "@/context/ContextAuth";
-import Title from "@/components/common/Title";
 import Button from "@/components/button/Button";
 import Paragraph from "@/components/common/Paragraph";
+import Title from "@/components/common/Title";
+import { useAuth } from "@/context/ContextAuth";
+import { useStyling } from "@/context/ContextStyling";
 import { defaultSetting as settings } from "@/libs/defaults";
 
 export default function PagesAuth({
@@ -11,24 +11,24 @@ export default function PagesAuth({
   title,
   description,
   children,
-  maxWidth = "max-w-md"
+  maxWidth = "max-w-md",
 }) {
   const { styling } = useStyling();
   const { isLoggedIn } = useAuth();
 
   return (
-    <div className={`min-h-screen ${styling.flex.center} bg-base-200 ${styling.general.box}`}>
+    <div
+      className={`min-h-screen ${styling.flex.center} bg-base-200 ${styling.general.box}`}
+    >
       <div className={`card w-full ${maxWidth} ${styling.components.card}`}>
-        <div className={`card-body items-center text-center ${styling.general.box}`}>
+        <div
+          className={`card-body items-center text-center ${styling.general.box}`}
+        >
           {!isLoggedIn && icon && (
-            <div className="mb-4 flex justify-center w-full">
-              {icon}
-            </div>
+            <div className="mb-4 flex justify-center w-full">{icon}</div>
           )}
 
-          <Title>
-            {isLoggedIn ? "You are logged in" : title}
-          </Title>
+          <Title>{isLoggedIn ? "You are logged in" : title}</Title>
 
           <Paragraph className="mb-6">
             {isLoggedIn

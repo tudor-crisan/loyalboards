@@ -1,9 +1,9 @@
 "use client";
 import IconLogo from "@/components/icon/IconLogo";
-import { useVisual } from "@/context/ContextVisual";
 import { useStyling } from "@/context/ContextStyling";
-import { redirect } from "next/navigation";
+import { useVisual } from "@/context/ContextVisual";
 import { defaultSetting as settings } from "@/libs/defaults";
+import { redirect } from "next/navigation";
 
 export default function HeaderTop({ url = "" }) {
   const { visual } = useVisual();
@@ -11,17 +11,13 @@ export default function HeaderTop({ url = "" }) {
 
   return (
     <div
-      className={`${styling.flex.items_center} gap-2 ${url && 'cursor-pointer'}`}
-      onClick={() => url ? redirect(url) : null}
+      className={`${styling.flex.items_center} gap-2 ${url && "cursor-pointer"}`}
+      onClick={() => (url ? redirect(url) : null)}
     >
-      {visual.show.SectionHeader.logo && (
-        <IconLogo />
-      )}
+      {visual.show.SectionHeader.logo && <IconLogo />}
       {visual.show.SectionHeader.appName && (
-        <span className="font-bold text-md sm:text-lg">
-          {settings.appName}
-        </span>
+        <span className="font-bold text-md sm:text-lg">{settings.appName}</span>
       )}
     </div>
-  )
+  );
 }
