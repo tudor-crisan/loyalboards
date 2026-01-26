@@ -4,23 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:local": "cross-env APP=local NEXT_PUBLIC_APP=local next dev",
-    "dev:tudorcrisan": "cross-env APP=tudorcrisan NEXT_PUBLIC_APP=tudorcrisan next dev",
-    "dev:loyalboards": "cross-env APP=loyalboards NEXT_PUBLIC_APP=loyalboards next dev",
-    "dev:taskflow": "cross-env APP=taskflow NEXT_PUBLIC_APP=taskflow next dev",
-    "lists": "node scripts/generate-lists.mjs",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix .",
-    "typescript": "npx tsx --tsconfig jsconfig.json scripts/typescript.js",
-    "stripe": "stripe listen --forward-to localhost:3000/api/billing/webhook",
-    "deploy": "node scripts/deploy.js",
-    "deploy:fix": "node scripts/deploy.js --no-bump",
-    "stick": "node scripts/copy-to-stick.js",
-    "loc": "node scripts/count-loc.js",
-    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" jest",
-    "update": "node scripts/update.js"
+    "start": "next start"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
