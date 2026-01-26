@@ -1,6 +1,6 @@
 {
   "name": "boilerplate",
-  "version": "0.0.72",
+  "version": "0.0.73",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,7 +19,8 @@
     "deploy:fix": "node scripts/deploy.js --no-bump",
     "stick": "node scripts/copy-to-stick.js",
     "loc": "node scripts/count-loc.js",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" jest",
+    "update": "node scripts/update.js"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
