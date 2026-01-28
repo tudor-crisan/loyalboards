@@ -22,13 +22,44 @@ if (appName) {
   try {
     const { default: apps } = await import("./lists/applications.mjs");
     const { default: settings } = await import("./lists/settings.node.mjs");
-    const { getMergedConfigWithModules } = await import("./libs/merge.mjs");
+    const { getMergedConfigWithModules, deepMerge } =
+      await import("./libs/merge.mjs");
 
     const appConfig = apps[appName];
-    const setting = appConfig?.setting;
+    const settingRef = appConfig?.setting;
 
-    if (setting) {
-      appSettings = getMergedConfigWithModules("setting", setting, settings);
+    if (settingRef) {
+      // Load module data for server-side config
+      const loadJSON = (p) => {
+        try {
+          return JSON.parse(fs.readFileSync(path.join(__dirname, p), "utf8"));
+        } catch {
+          return {};
+        }
+      };
+
+      const authData = loadJSON("modules/auth/data/auth.json");
+      const helpData = loadJSON("modules/help/data/help.json");
+      const blogData = loadJSON("modules/blog/data/blog.json");
+      const boardsData = loadJSON("modules/boards/data/boards.json");
+
+      // Construct Base Setting similar to defaults.js
+      const modulesBase = deepMerge(
+        authData,
+        deepMerge(helpData, deepMerge(blogData, boardsData)),
+      );
+      const baseSetting = deepMerge(modulesBase, settings.setting);
+
+      const enrichedSettingsList = {
+        ...settings,
+        setting: baseSetting,
+      };
+
+      appSettings = getMergedConfigWithModules(
+        "setting",
+        settingRef,
+        enrichedSettingsList,
+      );
     }
   } catch (error) {
     console.error("Failed to load app settings:", error.message);
@@ -50,7 +81,9 @@ const nextConfig = {
 
     const paths = appSettings?.paths || {};
     const returnPaths = Object.values(paths).filter((path) => {
-      return path && typeof path === "object" && path.source && path.destination;
+      return (
+        path && typeof path === "object" && path.source && path.destination
+      );
     });
 
     console.log("Rewrites loaded:", returnPaths.length);
