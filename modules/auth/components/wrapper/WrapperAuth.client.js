@@ -1,11 +1,11 @@
 "use client";
 
-import { useStyling } from "@/context/ContextStyling";
-import { clientApi, setDataError, setDataSuccess } from "@/libs/api";
-import { defaultStyling } from "@/libs/defaults";
-import { deepMerge } from "@/libs/merge.mjs";
-import { toast } from "@/libs/toast";
 import { ContextAuth } from "@/modules/auth/context/ContextAuth";
+import { useStyling } from "@/modules/general/context/ContextStyling";
+import { clientApi, setDataError, setDataSuccess } from "@/modules/general/libs/api";
+import { defaultSetting as settings, defaultStyling } from "@/modules/general/libs/defaults";
+import { deepMerge } from "@/modules/general/libs/merge.mjs";
+import { toast } from "@/modules/general/libs/toast";
 import { useEffect, useState } from "react";
 
 export default function WrapperAuthClient({ authSession, children }) {
@@ -32,7 +32,7 @@ export default function WrapperAuthClient({ authSession, children }) {
     try {
       // The data object already contains everything we need including logo
       // because we're passing { ...inputs, styling, logo } from DashboardProfile
-      const res = await clientApi.post("/api/user/update", data);
+      const res = await clientApi.post(settings.paths.api.userUpdate, data);
 
       // If server returns updated data (e.g. with server-generated logo), update local state again
       if (res.data?.styling) {

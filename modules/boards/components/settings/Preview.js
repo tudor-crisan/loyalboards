@@ -1,10 +1,10 @@
-import EmptyState from "@/components/common/EmptyState";
-import ThemeWrapper from "@/components/common/ThemeWrapper";
-import SvgPost from "@/components/svg/SvgPost";
-import { ContextStyling } from "@/context/ContextStyling";
-import { defaultSetting } from "@/libs/defaults";
 import BoardPreviewComments from "@/modules/boards/components/settings/PreviewComments";
 import BoardPreviewForm from "@/modules/boards/components/settings/PreviewForm";
+import EmptyState from "@/modules/general/components/common/EmptyState";
+import ThemeWrapper from "@/modules/general/components/common/ThemeWrapper";
+import SvgPost from "@/modules/general/components/svg/SvgPost";
+import { ContextStyling } from "@/modules/general/context/ContextStyling";
+import { defaultSetting as settings } from "@/modules/general/libs/defaults";
 
 export default function BoardPreview({ previewStyling, getVal, handleChange }) {
   return (
@@ -29,11 +29,11 @@ export default function BoardPreview({ previewStyling, getVal, handleChange }) {
               <EmptyState
                 title={getVal(
                   "emptyState.title",
-                  defaultSetting.defaultExtraSettings.emptyState.title,
+                  settings.defaultExtraSettings.emptyState.title,
                 )}
                 description={getVal(
                   "emptyState.description",
-                  defaultSetting.defaultExtraSettings.emptyState.description,
+                  settings.defaultExtraSettings.emptyState.description,
                 )}
                 icon={<SvgPost size="size-16" />}
               />

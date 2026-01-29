@@ -1,0 +1,124 @@
+{
+  "defaults": {
+    "deployedRoot": "C:/twain_32/deployed",
+    "targetFolders": ["loyalboards", "tudorcrisan.dev"],
+    "excludedFiles": [
+      ".next",
+      "node_modules",
+      ".vscode",
+      ".env",
+      "env",
+      ".git",
+      "scripts",
+      "todo.notes.txt",
+      "README.md",
+      ".env.example",
+      ".editorconfig",
+      "eslint.config.mjs",
+      "jest.config.cjs",
+      "jest.setup.js",
+      "tests",
+      "specs",
+      "types",
+      "coverage",
+      "extensions",
+      "data/deploy.json"
+    ],
+    "pathsToRemoveFromAll": [
+      "app/modules/preview",
+      "app/api/resend/test-email",
+      "public/uploads",
+      "public/exports"
+    ],
+    "dependenciesToRemove": [
+      "puppeteer",
+      "fluent-ffmpeg",
+      "@ffmpeg-installer/ffmpeg"
+    ]
+  },
+  "modules": {
+    "video": [
+      "modules/video",
+      "app/api/modules/video",
+      "app/modules/preview/video",
+      "public/assets/video"
+    ],
+    "boards": [
+      "modules/boards",
+      "app/modules/boards",
+      "app/api/modules/boards"
+    ],
+    "auth": [
+      "modules/auth",
+      "app/auth",
+      "app/dashboard",
+      "app/success",
+      "app/api/user/update",
+      "app/api/billing"
+    ],
+    "blog": ["modules/blog", "app/blog", "app/robots.js", "app/sitemap.js"],
+    "help": ["modules/help", "app/help"]
+  },
+  "apps": {
+    "loyalboards": {
+      "allowedApps": ["loyalboards"],
+      "removeResend": true,
+      "modulesToRemove": ["video"],
+      "vercelConfig": {
+        "crons": [
+          {
+            "path": "/api/modules/boards/weekly-digest",
+            "schedule": "0 8 * * 1"
+          }
+        ]
+      }
+    },
+    "tudorcrisan.dev": {
+      "allowedApps": ["tudorcrisan", "tudorcrisan.dev"],
+      "removeResend": false,
+      "publicAppsException": ["tudorcrisan.dev"],
+      "modulesToRemove": ["video", "boards", "auth", "blog", "help"],
+      "filesToFilter": ["libs/defaults.js", "components/pages/PagesSupport.js"],
+      "patches": {
+        "app/layout.js": [
+          {
+            "find": "import WrapperAuth from \"@/modules/auth/components/wrapper/WrapperAuth.server\";\n",
+            "replace": ""
+          },
+          {
+            "find": "{process.env.MONGO_DB ? (\n                  <WrapperAuth>{children}</WrapperAuth>\n                ) : (\n                  children\n                )}",
+            "replace": "{children}"
+          }
+        ],
+        "components/header/HeaderButton.js": [
+          {
+            "find": "import ButtonLogin from \"@/modules/auth/components/button/ButtonLogin\";",
+            "replace": "const ButtonLogin = () => null;"
+          }
+        ],
+        "components/hero/HeroButton.js": [
+          {
+            "find": "import ButtonLogin from \"@/modules/auth/components/button/ButtonLogin\";",
+            "replace": "const ButtonLogin = () => null;"
+          }
+        ],
+        "components/pricing/PricingButton.js": [
+          {
+            "find": "import ButtonLogin from \"@/modules/auth/components/button/ButtonLogin\";",
+            "replace": "const ButtonLogin = () => null;"
+          }
+        ],
+        "app/api/auth/[...nextauth]/route.js": [
+          {
+            "find": "import { GET, POST } from \"@/modules/auth/src/api/auth/[...nextauth]/route\";",
+            "replace": "const GET = () => new Response(\"Not Implemented\", { status: 501 }); const POST = GET;"
+          },
+          {
+            "find": "export { GET, POST };",
+            "replace": "export { GET, POST };"
+          }
+        ]
+      }
+    }
+  }
+}

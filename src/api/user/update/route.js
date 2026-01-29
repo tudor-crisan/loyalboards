@@ -1,18 +1,18 @@
-import { withApiHandler } from "@/libs/apiHandler";
-import { defaultSetting as setting } from "@/libs/defaults";
+import { withApiHandler } from "@/modules/general/libs/apiHandler";
+import { defaultSetting as settings } from "@/modules/general/libs/defaults";
 import {
   generateLogoBase64,
   responseError,
   responseSuccess,
-} from "@/libs/utils.server";
-import User from "@/models/User";
+} from "@/modules/general/libs/utils.server";
+import User from "@/modules/general/models/User";
 
 const TYPE = "UserUpdate";
 
 async function handler(req, { session }) {
-  const { serverError } = setting.forms.general.backend.responses;
+  const { serverError } = settings.forms.general.backend.responses;
 
-  const { profileUpdated } = setting.forms.User.backend.responses;
+  const { profileUpdated } = settings.forms.User.backend.responses;
 
   try {
     const { name, image, styling, visualConfig } = await req.json();

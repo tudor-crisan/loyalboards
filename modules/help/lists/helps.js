@@ -1,4 +1,4 @@
-import loyalboards_help from "@/data/apps/loyalboards/help.json";
+import loyalboards_help from "@/apps/loyalboards/help.json";
 
 const helps = {
   loyalboards_help,
